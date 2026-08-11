@@ -4,18 +4,20 @@ import type { CartItem, Product } from "@/types";
 
 interface CartState {
   items: CartItem[];
+  isOpen: boolean;
   addItem: (product: Product, quantity?: number) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
-  totalItems: () => number;
-  totalPrice: () => number;
+  openCart: () => void;
+  closeCart: () => void;
 }
 
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      isOpen: false,
 
       addItem: (product, quantity = 1) => {
         set((state) => {
@@ -60,15 +62,19 @@ export const useCartStore = create<CartState>()(
 
       clearCart: () => set({ items: [] }),
 
-      totalItems: () =>
-        get().items.reduce((sum, item) => sum + item.quantity, 0),
-
-      totalPrice: () =>
-        get().items.reduce(
-          (sum, item) => sum + item.product.price * item.quantity,
-          0
-        ),
+      openCart: () => set({ isOpen: true }),
+      closeCart: () => set({ isOpen: false }),
     }),
-    { name: "yanbal-cart" }
+    { 
+      name: "yanbal-cart",
+      partialize: (state) => ({ items: state.items }) // No persistir isOpen
+    }
   )
 );
+
+// Selectores computados
+export const useCartTotalItems = () => 
+  useCartStore((state) => state.items.reduce((sum, item) => sum + item.quantity, 0));
+
+export const useCartTotalPrice = () => 
+  useCartStore((state) => state.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0));

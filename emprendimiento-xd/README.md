@@ -1,11 +1,127 @@
 # GLOWSPOT · Catálogo Yanbal
 
-Tienda en línea para la venta de productos **Yanbal** en Arani, Cochabamba. Los clientes exploran el catálogo, arman su carrito y confirman el pedido por **WhatsApp**, con recojo en puntos de entrega locales.
+**Distribuidor Independiente de Yanbal Bolivia**
+
+Tienda en línea para la venta de productos **Yanbal** en Arani, Cochabamba. Los clientes exploran el catálogo, arman su carrito y confirman el pedido por **WhatsApp**, con recojo en puntos de entrega locales ("GlowSpots").
+
+## Modelo de Negocio
+
+- **Tipo:** E-commerce de productos de belleza y cuidado personal (skincare, maquillaje, perfumes, desodorantes) de la marca Yanbal
+- **Sistema de Entrega:** Click & Collect - Pides en línea, recoges en puntos físicos estratégicos en Arani, Cochabamba. No hay envío a domicilio
+- **Audiencia:** Totalmente inclusiva y unisex. Clientes de todas las edades: mujeres, hombres y niños
+- **Objetivo Actual:** Rediseñar el mockup de la página web actual (que es demasiado femenino/morado) para que sea neutro, moderno y llamativo para toda la familia, sin perder la elegancia de la marca
+
+---
+
+## Diseño y Paleta de Colores
+
+**Paleta: Minimalist Slate & Sun**
+
+Un diseño profesional y moderno con una paleta de colores unisex, neutra y sofisticada.
+
+| Uso | Color | Hex Code | Descripción |
+|-----|-------|----------|-------------|
+| **Primario** (Botones 'Agregar', 'Ver', Títulos) | Azul Cobalto | `#2B4C7E` | Fresco y profesional. Reemplaza todo el morado actual |
+| **Fondo de Cards y Secciones Suaves** | Azul Hielo | `#EBF1F5` | Muy pálido, para fondos secundarios |
+| **Acento** (Badges 'Nuevo', Ofertas, Llamativos) | Coral Caléndula | `#FF7B54` | Vibrante y llamativo |
+| **Fondo General** | Blanco Puro | `#FFFFFF` | Limpio y minimalista |
+| **Texto y Footer** | Gris Pizarra Profundo | `#1E2229` | Para legibilidad y elegancia |
+
+**Estilo Visual:**
+- Limpio, minimalista y de alta gama
+- Totalmente inclusivo, no debe parecer una tienda de cosméticos tradicionalmente femenina
+- Moderno y sofisticado para toda la familia
+
+---
+
+## Requisitos de Rediseño UI
+
+### Banner Principal
+- **Imagen:** Cambiar de una sola mujer a un collage moderno estilo lifestyle o foto mixta que incluya una mujer, un hombre y un niño sonriendo mientras usan productos de cuidado personal en un entorno urbano limpio
+- **Texto:** "Tu belleza Yanbal, más cerca que nunca"
+
+### Filtros de Productos
+Reemplazar las categorías actuales por:
+- Novedades
+- Cuidado de la Piel (Unisex)
+- Cuidado Masculino
+- Perfumes
+- Línea Niños
+- Protección Solar
+
+### Rejilla de Productos
+- Los productos deben reflejar diversidad (ej. un perfume de hombre, una colonia de niños, un bloqueador solar, una crema hidratante neutra)
+- Mantener precios en 'Bs.' y texto en español
+- Diseño de cards limpio y moderno con la paleta de colores especificada
+
+### Estructura de la Página
+Basada en el mockup original:
+- Cabecera con búsqueda
+- Banner principal
+- Rejilla de productos
+- Mapa de puntos de entrega (GlowSpots)
+- Footer
+
+---
+
+## Estrategia de Contenido y UX
+
+### Botones de Filtros Rápidos (debajo del banner)
+
+**6 botones inclusivos en orden sugerido:**
+
+1. **Novedades GLOWSPOT** - Atrae a todos los públicos que buscan lo último
+2. **Cuidado Esencial** - Término neutro que abarca skincare unisex, desodorantes, productos básicos para toda la familia
+3. **Para Él** - Directo para público masculino (cuidado de barba, fragancias masculinas, cuidado facial)
+4. **Para Ella** - Directo para público femenino (maquillaje, fragancias femeninas, cuidado facial)
+5. **Pequeños Héroes** - Nombre creativo y cariñoso para sección infantil, más atractivo que "Niños"
+6. **Protección Solar** - Categoría universalmente relevante para todas las edades y géneros
+
+**Alternativa para rotación:** **Aromas Únicos** (enfocado en perfumería unisex)
+
+### Redacción del Banner
+
+**Título:** "Tu belleza Yanbal, más cerca que nunca" ✅ (mantener)
+
+**Subtítulos (3 variantes para elegir):**
+
+**Variante 1 (Enfoque Familia + Comodidad):**
+"Descubre el cuidado ideal para toda tu familia. ¡Pide online y recoge fácil en tu GlowSpot de Arani!"
+
+**Variante 2 (Enfoque Bienestar + Rapidez):**
+"Bienestar para todos, a tu alcance. Recoge tus favoritos hoy mismo en tu GlowSpot Arani."
+
+**Variante 3 (Enfoque Diversidad + Localidad):**
+"Productos Yanbal para cada miembro de tu hogar. ¡Tu pedido listo para recoger en Arani!"
+
+### Estructura de Categoría 'Niños' (Pequeños Héroes)
+
+Dado que Yanbal tiene pocos productos infantiles, agrupa por momentos/beneficios para que la sección no parezca vacía:
+
+**Opción 1: 2 Subcategorías (Más simple)**
+
+- **Aventuras Frescas** - Colonias, shampoos suaves, productos de baño (evoca diversión y limpieza)
+- **Piel Cuidada** - Protectores solares, cremas hidratantes, productos para piel delicada
+
+**Opción 2: 3 Subcategorías (Si hay suficiente variedad)**
+
+- **Aromas de Fantasía** - Colonias y fragancias infantiles
+- **Hora del Baño Divertida** - Shampoos, jabones, productos lúdicos para el baño
+- **Cuidado Diario** - Cremas, protectores solares, productos cotidianos para piel infantil
+
+**Recomendaciones adicionales:**
+- Usa imágenes de niños felices y diversos usando productos
+- Enfoca descripciones en beneficios para niños (hipoalergénico, sin lágrimas) y padres (seguridad, facilidad)
+- Si es posible, añade contenido educativo (consejos cuidado piel infantil) para enriquecer la sección
 
 ---
 
 ## Tabla de contenidos
 
+- [Modelo de Negocio](#modelo-de-negocio)
+- [Diseño y Paleta de Colores](#diseño-y-paleta-de-colores)
+- [Requisitos de Rediseño UI](#requisitos-de-rediseño-ui)
+- [Estrategia de Contenido y UX](#estrategia-de-contenido-y-ux)
 - [Características](#características)
 - [Stack tecnológico](#stack-tecnológico)
 - [Estructura del proyecto](#estructura-del-proyecto)

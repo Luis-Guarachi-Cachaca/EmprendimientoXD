@@ -1,35 +1,36 @@
 "use client";
 
-import type { Category } from "@/types";
-
 interface CategoryFilterProps {
-  categories: Category[];
   selected: string | null;
-  onSelect: (categoryId: string | null) => void;
+  onSelect: (filter: string | null) => void;
 }
 
-export function CategoryFilter({
-  categories,
-  selected,
-  onSelect,
-}: CategoryFilterProps) {
+const filters = [
+  { id: "novedades", label: "Novedades GLOWSPOT" },
+  { id: "esencial", label: "Cuidado Esencial" },
+  { id: "hombres", label: "Para Él" },
+  { id: "mujeres", label: "Para Ella" },
+  { id: "ninos", label: "Pequeños Héroes" },
+  { id: "solar", label: "Protección Solar" },
+];
+
+export function CategoryFilter({ selected, onSelect }: CategoryFilterProps) {
   return (
-    <div className="flex flex-wrap gap-2">
-      <button
-        type="button"
-        onClick={() => onSelect(null)}
-        className={selected === null ? "font-bold" : ""}
-      >
-        Todos
-      </button>
-      {categories.map((category) => (
+    <div className="flex flex-wrap gap-3 justify-center py-8">
+      {filters.map((filter) => (
         <button
-          key={category.id}
+          key={filter.id}
           type="button"
-          onClick={() => onSelect(category.id)}
-          className={selected === category.id ? "font-bold" : ""}
+          onClick={() => onSelect(filter.id)}
+          className={`
+            px-6 py-2 rounded-full font-medium transition-all duration-200
+            ${selected === filter.id 
+              ? 'bg-[#2B4C7E] text-white shadow-md' 
+              : 'bg-[#EBF1F5] text-[#1E2229] hover:bg-[#2B4C7E] hover:text-white'
+            }
+          `}
         >
-          {category.name}
+          {filter.label}
         </button>
       ))}
     </div>
