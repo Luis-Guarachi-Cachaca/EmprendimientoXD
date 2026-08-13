@@ -47,16 +47,16 @@ export function ProductCard({ product }: ProductCardProps) {
           {product.short_description}
         </p>
         
-        <div className="flex items-center justify-between pt-2">
+        <div className="pt-2 space-y-3">
           <p className="text-xl font-bold text-[#2B4C7E]">
             Bs. {product.price.toFixed(2)}
           </p>
           <button
             onClick={handleAddToCart}
-            className="bg-[#2B4C7E] text-white p-2 rounded-full hover:bg-[#1E3A5F] transition-colors"
-            aria-label="Agregar al carrito"
+            className="w-full bg-[#2B4C7E] text-white py-2.5 rounded-lg font-semibold hover:bg-[#1E3A5F] transition-colors flex items-center justify-center gap-2"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4" />
+            Agregar al carrito
           </button>
         </div>
       </div>
