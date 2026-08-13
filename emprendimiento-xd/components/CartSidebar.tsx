@@ -11,8 +11,41 @@ export function CartSidebar() {
   const [customerName, setCustomerName] = useState("");
 
   const handleContactSeller = () => {
-    // TODO: Implementar lógica de WhatsApp
-    console.log("Contactar vendedor:", customerName);
+    const whatsappNumber = "59174307669";
+    
+    // Construir mensaje de productos
+    let message = "";
+    
+    if (customerName.trim()) {
+      message = `Hola, soy ${customerName.trim()}. Me gustaría cotizar los siguientes productos de GLOWSPOT:\n\n`;
+    } else {
+      message = `Hola, me gustaría cotizar los siguientes productos de GLOWSPOT:\n\n`;
+    }
+
+    items.forEach((item) => {
+      message += `• ${item.product.name} (x${item.quantity}) — Bs. ${(item.product.price * item.quantity).toFixed(2)}\n`;
+    });
+
+    message += `\nTotal: Bs. ${totalPrice.toFixed(2)}`;
+    // message += `\n\nQuisiera coordinar el punto de recojo en Arani.`; POR AHORA NO ESTA HABILITADO ESTA OPCION.
+
+    // Detectar si es móvil
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
+
+    let whatsappUrl: string;
+
+    if (isMobile) {
+      // Móvil: usar la app de WhatsApp
+      whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    } else {
+      // PC: usar WhatsApp Web
+      whatsappUrl = `https://api.whatsapp.com/send/?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
+    }
+
+    window.open(whatsappUrl, "_blank");
+    closeCart();
   };
 
   return (
