@@ -22,8 +22,8 @@ export function Footer() {
               <span className="text-2xl font-bold">GLOWSPOT</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Distribuidor independiente de productos Yanbal en Arani, Cochabamba. 
-              Belleza y cuidado personal para ellas, ellos y los más peques, con recojo en puntos GlowSpot.
+              Distribuidor independiente de productos en Cochabamba. 
+              Belleza y cuidado personal para ellas, ellos y los más peques, con recojo en puntos de entrega.
             </p>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 bg-[#2B4C7E] rounded-full flex items-center justify-center hover:bg-[#FF7B54] transition-colors">
@@ -61,7 +61,7 @@ export function Footer() {
             <ul className="space-y-3 text-gray-400 text-sm">
               <li className="flex items-start gap-2">
                 <Phone className="w-4 h-4 mt-1 flex-shrink-0" />
-                <span>WhatsApp: +591 700-00000</span>
+                <span>WhatsApp: +591 74307669</span>
               </li>
               <li className="flex items-start gap-2">
                 <Mail className="w-4 h-4 mt-1 flex-shrink-0" />
@@ -69,7 +69,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-4 h-4 mt-1 flex-shrink-0">📍</span>
-                <span>Arani, Cochabamba - Bolivia</span>
+                <span>Cochabamba - Bolivia</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-4 h-4 mt-1 flex-shrink-0">📍</span>
@@ -81,7 +81,7 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
-          <p>© 2026 GLOWSPOT - Distribuidor Independiente Yanbal - Mockup de demostración</p>
+          <p>© 2026 GLOWSPOT - Distribuidor Independiente</p>
         </div>
       </div>
     </footer>

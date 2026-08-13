@@ -15,14 +15,14 @@ export function HowItWorks() {
         {/* Header */}
         <div className="text-center mb-12">
           <span className="text-[#FF7B54] font-semibold text-sm uppercase tracking-wider">
-            CÓMO FUNCIONA
+            ¿CÓMO FUNCIONA?
           </span>
           <h2 className="text-4xl font-bold text-[#2B4C7E] mt-3 mb-4">
-            Pides en línea, recoges en tu punto
+            Pides en línea y recoges en tu punto
           </h2>
           <p className="text-lg text-[#6B7280] max-w-3xl mx-auto">
-            Click & Collect pensado para Arani. Sin domicilios ni recargas: eliges, confirmas y
-            recoges en el GlowSpot más cómodo para ti.
+            Sin domicilios ni recargas: eliges, confirmas y
+            recoges en el punto de entrega más cómodo para ti.
           </p>
         </div>
 
@@ -52,16 +52,16 @@ export function HowItWorks() {
             <div className="bg-[#2B4C7E] p-4 rounded-full text-white mb-6">
               <MapPin size={32} />
             </div>
-            <h3 className="text-xl font-bold text-[#2B4C7E] mb-3">Paso 3: Recoge en tu GlowSpot</h3>
+            <h3 className="text-xl font-bold text-[#2B4C7E] mb-3">Paso 3: Recoge en tu punto de entrega</h3>
             <p className="text-[#6B7280]">
-              Pasa por el punto que elijas en Arani. Sin costos de envío sorpresa.
+              Pasa por el punto que elijas. Sin costos de envío sorpresa.
             </p>
           </div>
         </div>
 
         {/* Location Buttons — id + scroll-mt-24: punto de destino del botón "Puntos de Entrega" del Hero */}
         <div id="puntos-entrega" className="text-center scroll-mt-24">
-          <h3 className="text-2xl font-bold text-[#2B4C7E] mb-6">Nuestros GlowSpots</h3>
+          <h3 className="text-2xl font-bold text-[#2B4C7E] mb-6">NUESTROS PUNTOS DE ENTREGA</h3>
           <div className="flex flex-wrap justify-center gap-4">
             {locations.map((location) => (
               <button
