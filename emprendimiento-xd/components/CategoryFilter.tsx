@@ -16,7 +16,9 @@ const filters = [
 
 export function CategoryFilter({ selected, onSelect }: CategoryFilterProps) {
   return (
-    <div className="flex flex-wrap gap-3 justify-center py-8">
+    // id + scroll-mt-24: punto de destino del botón "Ver Productos" del Hero.
+    // El scroll-mt deja un margen arriba al llegar, por si hay navbar fija.
+    <div id="productos" className="flex flex-wrap gap-3 justify-center py-8 scroll-mt-24">
       {filters.map((filter) => (
         <button
           key={filter.id}

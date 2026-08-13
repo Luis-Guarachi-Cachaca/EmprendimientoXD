@@ -59,8 +59,8 @@ export function HowItWorks() {
           </div>
         </div>
 
-        {/* Location Buttons */}
-        <div className="text-center">
+        {/* Location Buttons — id + scroll-mt-24: punto de destino del botón "Puntos de Entrega" del Hero */}
+        <div id="puntos-entrega" className="text-center scroll-mt-24">
           <h3 className="text-2xl font-bold text-[#2B4C7E] mb-6">Nuestros GlowSpots</h3>
           <div className="flex flex-wrap justify-center gap-4">
             {locations.map((location) => (
