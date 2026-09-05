@@ -18,6 +18,8 @@ export interface ProductImage {
   created_at?: string;
 }
 
+export type Gender = 'unisex' | 'men' | 'women' | 'kids';
+
 export interface Product {
   id: string;
   name: string;
@@ -26,11 +28,15 @@ export interface Product {
   description: string | null;
   brand_line: string | null;
   price: number;
+  discount_percentage: number | null;
+  final_price: number | null;
   image_url: string | null;
   category_id: string | null;
   stock: number;
+  is_available: boolean;
   is_new: boolean;
   is_active: boolean;
+  gender: Gender | null;
   sort_order: number;
   created_at?: string;
   updated_at?: string;

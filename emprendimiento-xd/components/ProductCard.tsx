@@ -48,15 +48,29 @@ export function ProductCard({ product }: ProductCardProps) {
         </p>
         
         <div className="pt-2 space-y-3">
-          <p className="text-xl font-bold text-[#2B4C7E]">
-            Bs. {product.price.toFixed(2)}
-          </p>
+          <div>
+            {product.discount_percentage && product.discount_percentage > 0 ? (
+              <>
+                <p className="text-sm text-[#6B7280] line-through">
+                  Bs. {product.price.toFixed(2)}
+                </p>
+                <p className="text-xl font-bold text-[#FF7B54]">
+                  Bs. {product.final_price?.toFixed(2)}
+                </p>
+              </>
+            ) : (
+              <p className="text-xl font-bold text-[#2B4C7E]">
+                Bs. {product.price.toFixed(2)}
+              </p>
+            )}
+          </div>
           <button
             onClick={handleAddToCart}
-            className="w-full bg-[#2B4C7E] text-white py-2.5 rounded-lg font-semibold hover:bg-[#1E3A5F] transition-colors flex items-center justify-center gap-2"
+            disabled={!product.is_available}
+            className="w-full bg-[#2B4C7E] text-white py-2.5 rounded-lg font-semibold hover:bg-[#1E3A5F] transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Plus className="w-4 h-4" />
-            Agregar al carrito
+            {product.is_available ? "Agregar al carrito" : "Agotado"}
           </button>
         </div>
       </div>
