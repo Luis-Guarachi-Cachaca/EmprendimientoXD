@@ -29,9 +29,9 @@ import { ShieldCheck, MapPin, Lock } from "lucide-react";
 
 export function Hero() {
   return (
-    <section className="relative bg-gradient-to-br from-[#EBF1F5] to-white py-16 md:py-24">
-      <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16">
-        <div className="grid items-center gap-16 md:grid-cols-2">
+    <section className="relative bg-gradient-to-br from-[#EBF1F5] to-white py-8 md:py-12">
+      <div className="w-full pl-4 pr-6 md:pl-8 md:pr-10 lg:pl-12 lg:pr-16">
+        <div className="grid items-center gap-10 md:grid-cols-[1.15fr_1fr] md:gap-12">
           {/* Columna de texto */}
           <div className="space-y-7">
             {/* Etiqueta superior — Poppins Medium 14px */}
@@ -47,7 +47,7 @@ export function Hero() {
             </h1>
 
             {/* Texto descriptivo — Poppins Regular 16px, interlineado 1.6 */}
-            <div className="max-w-md space-y-3 font-[family-name:var(--font-poppins)] text-base leading-[1.6] text-[#1E2229]/80">
+            <div className="max-w-lg space-y-3 font-[family-name:var(--font-poppins)] text-base leading-[1.6] text-[#1E2229]/80">
               <p>
                 Descubre una amplia selección de productos de belleza y
                 cuidado personal para mujeres, hombres y niños.
