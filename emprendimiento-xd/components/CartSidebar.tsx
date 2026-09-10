@@ -23,7 +23,10 @@ export function CartSidebar() {
     }
 
     items.forEach((item) => {
-      message += `• ${item.product.name} (x${item.quantity}) — Bs. ${(item.product.price * item.quantity).toFixed(2)}\n`;
+      const price = item.product.discount_percentage && item.product.discount_percentage > 0
+        ? (item.product.final_price || item.product.price)
+        : item.product.price;
+      message += `• ${item.product.name} (x${item.quantity}) — Bs. ${(price * item.quantity).toFixed(2)}\n`;
     });
 
     message += `\nTotal: Bs. ${totalPrice.toFixed(2)}`;
@@ -107,9 +110,22 @@ export function CartSidebar() {
                       <h3 className="font-semibold text-[#1E2229] text-sm line-clamp-2">
                         {item.product.name}
                       </h3>
-                      <p className="text-[#2B4C7E] font-bold mt-1">
-                        Bs. {item.product.price.toFixed(2)}
-                      </p>
+                      <div className="mt-1">
+                        {item.product.discount_percentage && item.product.discount_percentage > 0 ? (
+                          <>
+                            <p className="text-xs text-[#6B7280] line-through">
+                              Bs. {item.product.price.toFixed(2)}
+                            </p>
+                            <p className="text-[#FF7B54] font-bold">
+                              Bs. {item.product.final_price?.toFixed(2)}
+                            </p>
+                          </>
+                        ) : (
+                          <p className="text-[#2B4C7E] font-bold">
+                            Bs. {item.product.price.toFixed(2)}
+                          </p>
+                        )}
+                      </div>
 
                       {/* Quantity Controls */}
                       <div className="flex items-center gap-2 mt-2">

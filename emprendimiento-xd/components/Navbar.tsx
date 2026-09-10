@@ -46,6 +46,7 @@ export function Navbar() {
             </button>
             <button
               onClick={openCart}
+              data-cart-icon
               className="relative flex items-center gap-2 text-[#1E2229] hover:text-[#2B4C7E] transition-colors"
             >
               <ShoppingBag className="w-5 h-5" />

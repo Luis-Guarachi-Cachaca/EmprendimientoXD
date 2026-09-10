@@ -73,8 +73,15 @@ export const useCartStore = create<CartState>()(
 );
 
 // Selectores computados
-export const useCartTotalItems = () => 
+export const useCartTotalItems = () =>
   useCartStore((state) => state.items.reduce((sum, item) => sum + item.quantity, 0));
 
-export const useCartTotalPrice = () => 
-  useCartStore((state) => state.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0));
+export const useCartTotalPrice = () =>
+  useCartStore((state) =>
+    state.items.reduce((sum, item) => {
+      const price = item.product.discount_percentage && item.product.discount_percentage > 0
+        ? (item.product.final_price || item.product.price)
+        : item.product.price;
+      return sum + price * item.quantity;
+    }, 0)
+  );
