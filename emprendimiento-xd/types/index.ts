@@ -1,68 +1,90 @@
-export interface Category {
+export interface Categoria {
   id: string;
-  name: string;
+  nombre: string;
   slug: string;
-  description: string | null;
-  sort_order: number;
-  is_active: boolean;
-  created_at?: string;
+  descripcion: string | null;
+  orden_ordenamiento: number;
+  es_activo: boolean;
+  fecha_creacion?: string;
 }
 
-export interface ProductImage {
+export interface ImagenProducto {
   id: string;
-  product_id: string;
-  image_url: string;
-  alt_text: string | null;
-  sort_order: number;
-  is_primary: boolean;
-  created_at?: string;
+  producto_id: string;
+  url_imagen: string;
+  texto_alternativo: string | null;
+  orden_ordenamiento: number;
+  es_principal: boolean;
+  fecha_creacion?: string;
 }
 
-export type Gender = 'unisex' | 'men' | 'women' | 'kids';
-
-export interface Product {
+export interface Genero {
   id: string;
-  name: string;
+  nombre: string;
   slug: string;
-  short_description: string | null;
-  description: string | null;
-  brand_line: string | null;
-  price: number;
-  discount_percentage: number | null;
-  final_price: number | null;
-  image_url: string | null;
-  category_id: string | null;
+  descripcion: string | null;
+  orden_ordenamiento: number;
+  es_activo: boolean;
+  fecha_creacion?: string;
+}
+
+export interface Marca {
+  id: string;
+  nombre: string;
+  slug: string;
+  descripcion: string | null;
+  orden_ordenamiento: number;
+  es_activo: boolean;
+  fecha_creacion?: string;
+}
+
+export interface Producto {
+  id: string;
+  nombre: string;
+  slug: string;
+  descripcion_corta: string | null;
+  descripcion_completa: string | null;
+  marca_id: string | null;
+  precio: number;
+  porcentaje_descuento: number | null;
+  precio_final: number | null;
+  url_imagen: string | null;
+  categoria_id: string | null;
+  genero_id: string | null;
   stock: number;
-  is_available: boolean;
-  is_new: boolean;
-  is_active: boolean;
-  gender: Gender | null;
-  sort_order: number;
-  created_at?: string;
-  updated_at?: string;
-  images?: ProductImage[];
+  esta_disponible: boolean;
+  es_nuevo: boolean;
+  es_activo: boolean;
+  orden_ordenamiento: number;
+  fecha_creacion?: string;
+  fecha_actualizacion?: string;
+  imagenes?: ImagenProducto[];
+  // Campos relacionales para conveniencia (opcional)
+  categoria?: Categoria;
+  genero?: Genero;
+  marca?: Marca;
 }
 
-export interface DeliveryPoint {
+export interface PuntoEntrega {
   id: string;
-  name: string;
+  nombre: string;
   slug: string;
-  description: string | null;
-  sort_order: number;
-  is_active: boolean;
-  created_at?: string;
+  descripcion: string | null;
+  orden_ordenamiento: number;
+  es_activo: boolean;
+  fecha_creacion?: string;
 }
 
-export type ContactType = "whatsapp" | "email" | "phone" | "other";
+export type TipoContacto = "whatsapp" | "email" | "phone" | "other";
 
-export interface Contact {
+export interface Contacto {
   id: string;
-  type: ContactType;
-  label: string;
-  value: string;
-  sort_order: number;
-  is_active: boolean;
-  created_at?: string;
+  tipo: TipoContacto;
+  etiqueta: string;
+  valor: string;
+  orden_ordenamiento: number;
+  es_activo: boolean;
+  fecha_creacion?: string;
 }
 
 export interface SiteStep {
@@ -71,23 +93,23 @@ export interface SiteStep {
   description: string;
 }
 
-export interface SiteConfig {
+export interface ConfiguracionSitio {
   id: number;
-  company_name: string;
-  logo_url: string | null;
-  hero_badge: string | null;
-  hero_title: string | null;
-  hero_description: string | null;
-  hero_image_url: string | null;
-  shipping_note: string | null;
-  audience_note: string | null;
-  steps: SiteStep[];
-  contact_location: string | null;
-  footer_description: string | null;
-  updated_at?: string;
+  nombre_empresa: string;
+  url_logo: string | null;
+  insignia_hero: string | null;
+  titulo_hero: string | null;
+  descripcion_hero: string | null;
+  url_imagen_hero: string | null;
+  nota_envio: string | null;
+  nota_audiencia: string | null;
+  pasos: SiteStep[];
+  ubicacion_contacto: string | null;
+  descripcion_pie_pagina: string | null;
+  fecha_actualizacion?: string;
 }
 
-export interface CartItem {
-  product: Product;
-  quantity: number;
+export interface ItemCarrito {
+  producto: Producto;
+  cantidad: number;
 }

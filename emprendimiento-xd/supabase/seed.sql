@@ -1,10 +1,26 @@
 -- ============================================================
--- GLOWSPOT · Datos iniciales de ejemplo
+-- GLOWSPOT · Datos iniciales de ejemplo (ESPAÑOL)
 -- Ejecutar DESPUÉS de schema.sql
 -- ============================================================
 
+-- Géneros
+insert into generos (nombre, slug, descripcion, orden_ordenamiento) values
+  ('Unisex',        'unisex',        'Productos para todos', 1),
+  ('Para Él',       'para-el',       'Cuidado masculino',    2),
+  ('Para Ella',     'para-ella',     'Cuidado femenino',    3),
+  ('Niños',         'ninos',         'Productos infantiles', 4)
+on conflict (slug) do nothing;
+
+-- Marcas
+insert into marcas (nombre, slug, descripcion, orden_ordenamiento) values
+  ('Yanbal',        'yanbal',        'Productos Yanbal', 1),
+  ('Yanbal Skin Expert', 'yanbal-skin-expert', 'Línea skincare', 2),
+  ('Yanbal Fragancias', 'yanbal-fragancias', 'Línea de fragancias', 3),
+  ('Yanbal Kids',   'yanbal-kids',   'Línea infantil', 4)
+on conflict (slug) do nothing;
+
 -- Categorías
-insert into categories (name, slug, description, sort_order) values
+insert into categorias (nombre, slug, descripcion, orden_ordenamiento) values
   ('Cuidado de la Piel',  'cuidado-de-la-piel',  'Sérums, cremas y tratamientos faciales', 1),
   ('Cuidado Masculino',   'cuidado-masculino',   'Línea de cuidado personal para él',       2),
   ('Perfumes',            'perfumes',            'Fragancias y eau de parfum',              3),
@@ -13,17 +29,18 @@ insert into categories (name, slug, description, sort_order) values
 on conflict (slug) do nothing;
 
 -- Productos con descripción corta y completa
-insert into products (
-  name, slug, short_description, description, brand_line, price, category_id, is_new, stock
+insert into productos (
+  nombre, slug, descripcion_corta, descripcion_completa, marca_id, precio, categoria_id, genero_id, es_nuevo, stock
 ) values
   (
     'Sérum Facial Renovador',
     'serum-facial-renovador',
     'Sérum concentrado que renueva y revitaliza la piel.',
     'El Sérum Facial Renovador de Yanbal Skin Expert está formulado con activos de alta concentración que ayudan a renovar la piel, reducir líneas de expresión y devolver luminosidad. Ideal para uso diario, mañana y noche. Apto para todo tipo de piel.',
-    'YANBAL · SKIN EXPERT',
+    (select id from marcas where slug = 'yanbal-skin-expert'),
     189.00,
-    (select id from categories where slug = 'cuidado-de-la-piel'),
+    (select id from categorias where slug = 'cuidado-de-la-piel'),
+    (select id from generos where slug = 'unisex'),
     true,
     20
   ),
@@ -32,9 +49,10 @@ insert into products (
     'colonia-infantil-suave',
     'Colonia delicada formulada especialmente para niños.',
     'Colonia Infantil Suave de la línea Yanbal Kids. Fragancia ligera y fresca, dermatológicamente testeada, sin alcohol agresivo. Perfecta para el cuidado diario de los más pequeños de la casa.',
-    'YANBAL · KIDS',
+    (select id from marcas where slug = 'yanbal-kids'),
     78.00,
-    (select id from categories where slug = 'linea-ninos'),
+    (select id from categorias where slug = 'linea-ninos'),
+    (select id from generos where slug = 'ninos'),
     true,
     15
   ),
@@ -42,10 +60,11 @@ insert into products (
     'Eau de Parfum Floral',
     'eau-de-parfum-floral',
     'Fragancia floral elegante de larga duración.',
-    'Eau de Parfum Floral de Yanbal Fragrancias. Notas florales sofisticadas con excelente fijación. Una fragancia versátil para el día a día o ocasiones especiales. Presentación elegante ideal para regalo.',
-    'YANBAL · FRAGANCIAS',
+    'Eau de Parfum Floral de Yanbal Fragancias. Notas florales sofisticadas con excelente fijación. Una fragancia versátil para el día a día o ocasiones especiales. Presentación elegante ideal para regalo.',
+    (select id from marcas where slug = 'yanbal-fragancias'),
     320.00,
-    (select id from categories where slug = 'perfumes'),
+    (select id from categorias where slug = 'perfumes'),
+    (select id from generos where slug = 'para-ella'),
     true,
     10
   )
@@ -53,40 +72,40 @@ on conflict (slug) do nothing;
 
 -- Imágenes adicionales de productos (galería)
 -- Nota: reemplaza las URLs cuando subas imágenes reales a Supabase Storage
-insert into product_images (product_id, image_url, alt_text, sort_order, is_primary)
+insert into imagenes_productos (producto_id, url_imagen, texto_alternativo, orden_ordenamiento, es_principal)
 select p.id, 'https://placehold.co/600x600?text=Serum+1', 'Sérum Facial Renovador - vista frontal', 1, true
-from products p where p.slug = 'serum-facial-renovador';
+from productos p where p.slug = 'serum-facial-renovador';
 
-insert into product_images (product_id, image_url, alt_text, sort_order)
+insert into imagenes_productos (producto_id, url_imagen, texto_alternativo, orden_ordenamiento)
 select p.id, 'https://placehold.co/600x600?text=Serum+2', 'Sérum Facial Renovador - aplicación', 2
-from products p where p.slug = 'serum-facial-renovador';
+from productos p where p.slug = 'serum-facial-renovador';
 
-insert into product_images (product_id, image_url, alt_text, sort_order)
+insert into imagenes_productos (producto_id, url_imagen, texto_alternativo, orden_ordenamiento)
 select p.id, 'https://placehold.co/600x600?text=Serum+3', 'Sérum Facial Renovador - ingredientes', 3
-from products p where p.slug = 'serum-facial-renovador';
+from productos p where p.slug = 'serum-facial-renovador';
 
-insert into product_images (product_id, image_url, alt_text, sort_order, is_primary)
+insert into imagenes_productos (producto_id, url_imagen, texto_alternativo, orden_ordenamiento, es_principal)
 select p.id, 'https://placehold.co/600x600?text=Colonia+1', 'Colonia Infantil Suave - vista frontal', 1, true
-from products p where p.slug = 'colonia-infantil-suave';
+from productos p where p.slug = 'colonia-infantil-suave';
 
-insert into product_images (product_id, image_url, alt_text, sort_order)
+insert into imagenes_productos (producto_id, url_imagen, texto_alternativo, orden_ordenamiento)
 select p.id, 'https://placehold.co/600x600?text=Colonia+2', 'Colonia Infantil Suave - empaque', 2
-from products p where p.slug = 'colonia-infantil-suave';
+from productos p where p.slug = 'colonia-infantil-suave';
 
-insert into product_images (product_id, image_url, alt_text, sort_order, is_primary)
+insert into imagenes_productos (producto_id, url_imagen, texto_alternativo, orden_ordenamiento, es_principal)
 select p.id, 'https://placehold.co/600x600?text=Perfume+1', 'Eau de Parfum Floral - vista frontal', 1, true
-from products p where p.slug = 'eau-de-parfum-floral';
+from productos p where p.slug = 'eau-de-parfum-floral';
 
-insert into product_images (product_id, image_url, alt_text, sort_order)
+insert into imagenes_productos (producto_id, url_imagen, texto_alternativo, orden_ordenamiento)
 select p.id, 'https://placehold.co/600x600?text=Perfume+2', 'Eau de Parfum Floral - frasco', 2
-from products p where p.slug = 'eau-de-parfum-floral';
+from productos p where p.slug = 'eau-de-parfum-floral';
 
-insert into product_images (product_id, image_url, alt_text, sort_order)
+insert into imagenes_productos (producto_id, url_imagen, texto_alternativo, orden_ordenamiento)
 select p.id, 'https://placehold.co/600x600?text=Perfume+3', 'Eau de Parfum Floral - detalle', 3
-from products p where p.slug = 'eau-de-parfum-floral';
+from productos p where p.slug = 'eau-de-parfum-floral';
 
 -- Puntos de entrega
-insert into delivery_points (name, slug, sort_order) values
+insert into puntos_entrega (nombre, slug, orden_ordenamiento) values
   ('Universidad Mayor de San Simón', 'umss',          1),
   ('Plaza Sucre',                    'plaza-sucre',   2),
   ('Plaza 14 de Septiembre',         'plaza-14-sept', 3),
@@ -95,7 +114,7 @@ insert into delivery_points (name, slug, sort_order) values
 on conflict (slug) do nothing;
 
 -- Contactos (puedes agregar tantos como necesites)
-insert into contacts (type, label, value, sort_order) values
+insert into contactos (tipo, etiqueta, valor, orden_ordenamiento) values
   ('whatsapp', 'WhatsApp Ventas',    '+591 74307669',      1),
   ('whatsapp', 'WhatsApp Soporte',   '+591 70000001',      2),
   ('email',    'Correo principal',   'hola@glowspot.com',  3),
@@ -104,16 +123,16 @@ insert into contacts (type, label, value, sort_order) values
 on conflict do nothing;
 
 -- Configuración del sitio
-insert into site_config (
-  company_name,
-  hero_badge,
-  hero_title,
-  hero_description,
-  shipping_note,
-  audience_note,
-  steps,
-  contact_location,
-  footer_description
+insert into configuracion_sitio (
+  nombre_empresa,
+  insignia_hero,
+  titulo_hero,
+  descripcion_hero,
+  nota_envio,
+  nota_audiencia,
+  pasos,
+  ubicacion_contacto,
+  descripcion_pie_pagina
 ) values (
   'GLOWSPOT',
   'PIDE HOY · RECOGE EN TU PUNTO',
@@ -130,13 +149,13 @@ insert into site_config (
   'Distribuidor independiente de productos Yanbal en Arani, Cochabamba. Belleza y cuidado personal para ellas, ellos y los más peques, con recojo en puntos GlowSpot.'
 )
 on conflict (id) do update set
-  company_name       = excluded.company_name,
-  hero_badge         = excluded.hero_badge,
-  hero_title         = excluded.hero_title,
-  hero_description   = excluded.hero_description,
-  shipping_note      = excluded.shipping_note,
-  audience_note      = excluded.audience_note,
-  steps              = excluded.steps,
-  contact_location   = excluded.contact_location,
-  footer_description = excluded.footer_description,
-  updated_at         = now();
+  nombre_empresa          = excluded.nombre_empresa,
+  insignia_hero           = excluded.insignia_hero,
+  titulo_hero             = excluded.titulo_hero,
+  descripcion_hero        = excluded.descripcion_hero,
+  nota_envio              = excluded.nota_envio,
+  nota_audiencia           = excluded.nota_audiencia,
+  pasos                   = excluded.pasos,
+  ubicacion_contacto      = excluded.ubicacion_contacto,
+  descripcion_pie_pagina  = excluded.descripcion_pie_pagina,
+  fecha_actualizacion     = now();

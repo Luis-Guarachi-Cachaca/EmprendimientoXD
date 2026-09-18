@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, Plus, Minus } from "lucide-react";
 import { useCartStore, useCartTotalPrice, useCartTotalItems } from "@/store/cartStore";
+import type { ItemCarrito } from "@/types";
 
 export function CartSidebar() {
   const { items, updateQuantity, removeItem, isOpen, closeCart } = useCartStore();
@@ -22,11 +23,11 @@ export function CartSidebar() {
       message = `Hola, me gustaría cotizar los siguientes productos de GLOWSPOT:\n\n`;
     }
 
-    items.forEach((item) => {
-      const price = item.product.discount_percentage && item.product.discount_percentage > 0
-        ? (item.product.final_price || item.product.price)
-        : item.product.price;
-      message += `• ${item.product.name} (x${item.quantity}) — Bs. ${(price * item.quantity).toFixed(2)}\n`;
+    items.forEach((item: ItemCarrito) => {
+      const price = item.producto.porcentaje_descuento && item.producto.porcentaje_descuento > 0
+        ? (item.producto.precio_final || item.producto.precio)
+        : item.producto.precio;
+      message += `• ${item.producto.nombre} (x${item.cantidad}) — Bs. ${(price * item.cantidad).toFixed(2)}\n`;
     });
 
     message += `\nTotal: Bs. ${totalPrice.toFixed(2)}`;
@@ -87,17 +88,17 @@ export function CartSidebar() {
               </div>
             ) : (
               <div className="space-y-4">
-                {items.map((item) => (
+                {items.map((item: ItemCarrito) => (
                   <div
-                    key={item.product.id}
+                    key={item.producto.id}
                     className="flex gap-4 p-4 bg-[#EBF1F5] rounded-lg"
                   >
                     {/* Product Image */}
                     <div className="w-20 h-20 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
-                      {item.product.image_url ? (
+                      {item.producto.url_imagen ? (
                         <img
-                          src={item.product.image_url}
-                          alt={item.product.name}
+                          src={item.producto.url_imagen}
+                          alt={item.producto.nombre}
                           className="w-full h-full object-cover rounded-lg"
                         />
                       ) : (
@@ -108,21 +109,21 @@ export function CartSidebar() {
                     {/* Product Info */}
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-[#1E2229] text-sm line-clamp-2">
-                        {item.product.name}
+                        {item.producto.nombre}
                       </h3>
                       <div className="mt-1">
-                        {item.product.discount_percentage && item.product.discount_percentage > 0 ? (
+                        {item.producto.porcentaje_descuento && item.producto.porcentaje_descuento > 0 ? (
                           <>
                             <p className="text-xs text-[#6B7280] line-through">
-                              Bs. {item.product.price.toFixed(2)}
+                              Bs. {item.producto.precio.toFixed(2)}
                             </p>
                             <p className="text-[#FF7B54] font-bold">
-                              Bs. {item.product.final_price?.toFixed(2)}
+                              Bs. {item.producto.precio_final?.toFixed(2)}
                             </p>
                           </>
                         ) : (
                           <p className="text-[#2B4C7E] font-bold">
-                            Bs. {item.product.price.toFixed(2)}
+                            Bs. {item.producto.precio.toFixed(2)}
                           </p>
                         )}
                       </div>
@@ -130,16 +131,16 @@ export function CartSidebar() {
                       {/* Quantity Controls */}
                       <div className="flex items-center gap-2 mt-2">
                         <button
-                          onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.producto.id, item.cantidad - 1)}
                           className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-[#2B4C7E] hover:text-white transition-colors"
                         >
                           <Minus className="w-4 h-4" />
                         </button>
                         <span className="w-8 text-center font-medium text-[#1E2229]">
-                          {item.quantity}
+                          {item.cantidad}
                         </span>
                         <button
-                          onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.producto.id, item.cantidad + 1)}
                           className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-[#2B4C7E] hover:text-white transition-colors"
                         >
                           <Plus className="w-4 h-4" />
@@ -149,7 +150,7 @@ export function CartSidebar() {
 
                     {/* Remove Button */}
                     <button
-                      onClick={() => removeItem(item.product.id)}
+                      onClick={() => removeItem(item.producto.id)}
                       className="p-2 hover:bg-red-100 rounded-full transition-colors self-start"
                     >
                       <X className="w-4 h-4 text-red-500" />

@@ -3,17 +3,17 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, Search, Loader2, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
-import type { Product } from "@/types";
+import type { Producto } from "@/types";
 import { ProductForm } from "./ProductForm";
 
 export function ProductList() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Producto[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | undefined>();
+  const [editingProduct, setEditingProduct] = useState<Producto | undefined>();
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -24,8 +24,8 @@ export function ProductList() {
     if (searchTerm) {
       const filtered = products.filter(
         (p) =>
-          p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          p.brand_line?.toLowerCase().includes(searchTerm.toLowerCase())
+          p.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (p.marca && p.marca.nombre.toLowerCase().includes(searchTerm.toLowerCase()))
       );
       setFilteredProducts(filtered);
     } else {
@@ -39,9 +39,9 @@ export function ProductList() {
 
     try {
       const { data, error } = await supabase
-        .from("products")
-        .select("*, categories(name)")
-        .order("created_at", { ascending: false });
+        .from("productos")
+        .select("*, categorias(nombre), marcas(nombre), generos(nombre)")
+        .order("fecha_creacion", { ascending: false });
 
       if (error) throw error;
 
@@ -60,7 +60,7 @@ export function ProductList() {
     setShowForm(true);
   };
 
-  const handleEdit = (product: Product) => {
+  const handleEdit = (product: Producto) => {
     setEditingProduct(product);
     setShowForm(true);
   };
@@ -72,9 +72,14 @@ export function ProductList() {
     setError(null);
 
     try {
-      const { error } = await supabase.from("products").delete().eq("id", id);
+      const response = await fetch(`/api/admin/productos/${id}`, {
+        method: 'DELETE',
+      });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al eliminar producto');
+      }
 
       setProducts((prev) => prev.filter((p) => p.id !== id));
     } catch (err) {
@@ -100,7 +105,7 @@ export function ProductList() {
     return (
       <div className="max-w-4xl mx-auto">
         <ProductForm
-          product={editingProduct}
+          producto={editingProduct}
           onSuccess={handleFormSuccess}
           onCancel={handleFormCancel}
         />
@@ -167,10 +172,10 @@ export function ProductList() {
                 >
                   {/* Image */}
                   <div className="aspect-square bg-[#EBF1F5] relative">
-                    {product.image_url ? (
+                    {product.url_imagen ? (
                       <img
-                        src={product.image_url}
-                        alt={product.name}
+                        src={product.url_imagen}
+                        alt={product.nombre}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -178,7 +183,7 @@ export function ProductList() {
                         <span className="text-sm">Sin imagen</span>
                       </div>
                     )}
-                    {product.is_new && (
+                    {product.es_nuevo && (
                       <span className="absolute top-2 left-2 bg-[#FF7B54] text-white text-xs font-bold px-2 py-1 rounded-full">
                         Nuevo
                       </span>
@@ -188,32 +193,32 @@ export function ProductList() {
                   {/* Info */}
                   <div className="p-4 space-y-2">
                     <h3 className="font-semibold text-[#1E2229] line-clamp-1">
-                      {product.name}
+                      {product.nombre}
                     </h3>
                     <p className="text-sm text-[#6B7280] line-clamp-1">
-                      {product.brand_line}
+                      {product.marca?.nombre || ''}
                     </p>
                     <div className="flex items-center justify-between">
                       <div>
-                        {product.discount_percentage && product.discount_percentage > 0 ? (
+                        {product.porcentaje_descuento && product.porcentaje_descuento > 0 ? (
                           <>
                             <p className="text-sm text-[#6B7280] line-through">
-                              Bs. {product.price.toFixed(2)}
+                              Bs. {product.precio.toFixed(2)}
                             </p>
                             <p className="text-lg font-bold text-[#FF7B54]">
-                              Bs. {product.final_price?.toFixed(2)}
+                              Bs. {product.precio_final?.toFixed(2)}
                             </p>
                           </>
                         ) : (
                           <p className="text-lg font-bold text-[#2B4C7E]">
-                            Bs. {product.price.toFixed(2)}
+                            Bs. {product.precio.toFixed(2)}
                           </p>
                         )}
                       </div>
                       <span className={`text-xs px-2 py-1 rounded-full ${
-                        product.is_available ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                        product.esta_disponible ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                       }`}>
-                        {product.is_available ? 'Disponible' : 'Agotado'}
+                        {product.esta_disponible ? 'Disponible' : 'Agotado'}
                       </span>
                     </div>
 

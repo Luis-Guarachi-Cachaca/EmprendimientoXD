@@ -1,13 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { CartItem, Product } from "@/types";
+import type { ItemCarrito, Producto } from "@/types";
 
 interface CartState {
-  items: CartItem[];
+  items: ItemCarrito[];
   isOpen: boolean;
-  addItem: (product: Product, quantity?: number) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addItem: (producto: Producto, cantidad?: number) => void;
+  removeItem: (productoId: string) => void;
+  updateQuantity: (productoId: string, cantidad: number) => void;
   clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
@@ -19,43 +19,43 @@ export const useCartStore = create<CartState>()(
       items: [],
       isOpen: false,
 
-      addItem: (product, quantity = 1) => {
+      addItem: (producto, cantidad = 1) => {
         set((state) => {
           const existing = state.items.find(
-            (item) => item.product.id === product.id
+            (item) => item.producto.id === producto.id
           );
 
           if (existing) {
             return {
               items: state.items.map((item) =>
-                item.product.id === product.id
-                  ? { ...item, quantity: item.quantity + quantity }
+                item.producto.id === producto.id
+                  ? { ...item, cantidad: item.cantidad + cantidad }
                   : item
               ),
             };
           }
 
           return {
-            items: [...state.items, { product, quantity }],
+            items: [...state.items, { producto, cantidad }],
           };
         });
       },
 
-      removeItem: (productId) => {
+      removeItem: (productoId) => {
         set((state) => ({
-          items: state.items.filter((item) => item.product.id !== productId),
+          items: state.items.filter((item) => item.producto.id !== productoId),
         }));
       },
 
-      updateQuantity: (productId, quantity) => {
-        if (quantity <= 0) {
-          get().removeItem(productId);
+      updateQuantity: (productoId, cantidad) => {
+        if (cantidad <= 0) {
+          get().removeItem(productoId);
           return;
         }
 
         set((state) => ({
           items: state.items.map((item) =>
-            item.product.id === productId ? { ...item, quantity } : item
+            item.producto.id === productoId ? { ...item, cantidad } : item
           ),
         }));
       },
@@ -74,14 +74,14 @@ export const useCartStore = create<CartState>()(
 
 // Selectores computados
 export const useCartTotalItems = () =>
-  useCartStore((state) => state.items.reduce((sum, item) => sum + item.quantity, 0));
+  useCartStore((state) => state.items.reduce((sum, item) => sum + item.cantidad, 0));
 
 export const useCartTotalPrice = () =>
   useCartStore((state) =>
     state.items.reduce((sum, item) => {
-      const price = item.product.discount_percentage && item.product.discount_percentage > 0
-        ? (item.product.final_price || item.product.price)
-        : item.product.price;
-      return sum + price * item.quantity;
+      const price = item.producto.porcentaje_descuento && item.producto.porcentaje_descuento > 0
+        ? (item.producto.precio_final || item.producto.precio)
+        : item.producto.precio;
+      return sum + price * item.cantidad;
     }, 0)
   );

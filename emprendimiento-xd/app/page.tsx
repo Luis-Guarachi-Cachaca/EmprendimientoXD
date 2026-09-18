@@ -7,11 +7,11 @@ import { ProductCard } from "@/components/ProductCard";
 import { HowItWorks } from "@/components/HowItWorks";
 import { Footer } from "@/components/Footer";
 import { CartSidebar } from "@/components/CartSidebar";
-import { getProducts } from "@/lib/supabase/queries";
-import type { Product } from "@/types";
+import { getProductos } from "@/lib/supabase/queries";
+import type { Producto } from "@/types";
 
 export default function Home() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
 
@@ -22,7 +22,7 @@ export default function Home() {
   const loadProducts = async () => {
     try {
       console.log("🔄 Cargando productos desde Supabase...");
-      const data = await getProducts();
+      const data = await getProductos();
       console.log("✅ Productos cargados:", data);
       setProducts(data);
     } catch (error) {
@@ -33,7 +33,7 @@ export default function Home() {
   };
 
   const filteredProducts = selectedFilter
-    ? products.filter((p) => p.category_id === selectedFilter)
+    ? products.filter((p) => p.categoria_id === selectedFilter)
     : products;
 
   return (
@@ -63,10 +63,10 @@ export default function Home() {
             </p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredProducts.map((product) => (
+              {filteredProducts.map((producto) => (
                 <ProductCard
-                  key={product.id}
-                  product={product}
+                  key={producto.id}
+                  producto={producto}
                 />
               ))}
             </div>

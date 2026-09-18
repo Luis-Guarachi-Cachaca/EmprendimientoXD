@@ -1,22 +1,22 @@
 "use client";
 
 import { useState, useRef } from "react";
-import type { Product } from "@/types";
+import type { Producto } from "@/types";
 import { Plus } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 
 interface ProductCardProps {
-  product: Product;
+  producto: Producto;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ producto }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
   const [isAnimating, setIsAnimating] = useState(false);
   const [flyingImage, setFlyingImage] = useState<{ x: number; y: number; opacity: number; scale: number } | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleAddToCart = () => {
-    if (!product.is_available) return;
+    if (!producto.esta_disponible) return;
 
     setIsAnimating(true);
 
@@ -52,7 +52,7 @@ export function ProductCard({ product }: ProductCardProps) {
       }, 600);
     }
 
-    addItem(product);
+    addItem(producto);
   };
 
   return (
@@ -60,10 +60,10 @@ export function ProductCard({ product }: ProductCardProps) {
       <article className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-200">
         {/* Imagen del producto */}
         <div className="aspect-square bg-[#EBF1F5] relative">
-          {product.image_url ? (
+          {producto.url_imagen ? (
             <img
-              src={product.image_url}
-              alt={product.name}
+              src={producto.url_imagen}
+              alt={producto.nombre}
               className="w-full h-full object-cover"
             />
           ) : (
@@ -72,7 +72,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
           )}
           {/* Badge de novedad */}
-          {product.is_new && (
+          {producto.es_nuevo && (
             <span className="absolute top-3 left-3 bg-[#FF7B54] text-white text-xs font-semibold px-3 py-1 rounded-full">
               Nuevo
             </span>
@@ -82,46 +82,46 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Información del producto */}
         <div className="p-4 space-y-3">
           <h3 className="font-semibold text-[#1E2229] line-clamp-2 min-h-[2.5rem]">
-            {product.name}
+            {producto.nombre}
           </h3>
           <p className="text-sm text-[#6B7280] line-clamp-2 min-h-[2.5rem]">
-            {product.short_description}
+            {producto.descripcion_corta}
           </p>
 
           <div className="pt-2 space-y-3">
             <div>
-              {product.discount_percentage && product.discount_percentage > 0 ? (
+              {producto.porcentaje_descuento && producto.porcentaje_descuento > 0 ? (
                 <>
                   <p className="text-sm text-[#6B7280] line-through">
-                    Bs. {product.price.toFixed(2)}
+                    Bs. {producto.precio.toFixed(2)}
                   </p>
                   <p className="text-xl font-bold text-[#FF7B54]">
-                    Bs. {product.final_price?.toFixed(2)}
+                    Bs. {producto.precio_final?.toFixed(2)}
                   </p>
                 </>
               ) : (
                 <p className="text-xl font-bold text-[#2B4C7E]">
-                  Bs. {product.price.toFixed(2)}
+                  Bs. {producto.precio.toFixed(2)}
                 </p>
               )}
             </div>
             <button
               ref={buttonRef}
               onClick={handleAddToCart}
-              disabled={!product.is_available}
+              disabled={!producto.esta_disponible}
               className={`w-full bg-[#2B4C7E] text-white py-2.5 rounded-lg font-semibold hover:bg-[#1E3A5F] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${
                 isAnimating ? 'scale-95 bg-[#1E3A5F]' : ''
               }`}
             >
               <Plus className="w-4 h-4" />
-              {product.is_available ? "Agregar al carrito" : "Agotado"}
+              {producto.esta_disponible ? "Agregar al carrito" : "Agotado"}
             </button>
           </div>
         </div>
       </article>
 
       {/* Imagen volando hacia el carrito */}
-      {flyingImage && product.image_url && (
+      {flyingImage && producto.url_imagen && (
         <div
           className="fixed pointer-events-none z-50 transition-all duration-500 ease-in-out"
           style={{
@@ -132,8 +132,8 @@ export function ProductCard({ product }: ProductCardProps) {
           }}
         >
           <img
-            src={product.image_url}
-            alt={product.name}
+            src={producto.url_imagen}
+            alt={producto.nombre}
             className="w-12 h-12 object-cover rounded-lg shadow-lg"
           />
         </div>

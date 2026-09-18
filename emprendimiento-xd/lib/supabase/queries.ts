@@ -1,31 +1,33 @@
 import type {
-  Category,
-  Contact,
-  DeliveryPoint,
-  Product,
-  SiteConfig,
+  Categoria,
+  Contacto,
+  PuntoEntrega,
+  Producto,
+  ConfiguracionSitio,
+  Genero,
+  Marca,
 } from "@/types";
 import { supabase } from "./client";
 
-export async function getProducts(): Promise<Product[]> {
+export async function getProductos(): Promise<Producto[]> {
   const { data, error } = await supabase
-    .from("products")
+    .from("productos")
     .select("*")
-    .eq("is_active", true)
-    .order("sort_order")
-    .order("name");
+    .eq("es_activo", true)
+    .order("orden_ordenamiento")
+    .order("nombre");
 
   if (error) throw error;
   return data ?? [];
 }
 
-export async function getProductBySlug(slug: string): Promise<Product | null> {
+export async function getProductoPorSlug(slug: string): Promise<Producto | null> {
   const { data, error } = await supabase
-    .from("products")
-    .select("*, product_images(*)")
+    .from("productos")
+    .select("*, imagenes_productos(*), categorias(*), generos(*), marcas(*)")
     .eq("slug", slug)
-    .eq("is_active", true)
-    .order("sort_order", { referencedTable: "product_images" })
+    .eq("es_activo", true)
+    .order("orden_ordenamiento", { referencedTable: "imagenes_productos" })
     .single();
 
   if (error) {
@@ -33,93 +35,118 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     throw error;
   }
 
-  const { product_images, ...product } = data;
+  const { imagenes_productos, categorias, generos, marcas, ...producto } = data;
   return {
-    ...product,
-    images: product_images ?? [],
+    ...producto,
+    imagenes: imagenes_productos ?? [],
+    categoria: categorias ?? undefined,
+    genero: generos ?? undefined,
+    marca: marcas ?? undefined,
   };
 }
 
-export async function getCategories(): Promise<Category[]> {
+export async function getCategorias(): Promise<Categoria[]> {
   const { data, error } = await supabase
-    .from("categories")
+    .from("categorias")
     .select("*")
-    .eq("is_active", true)
-    .order("sort_order");
+    .eq("es_activo", true)
+    .order("orden_ordenamiento");
 
   if (error) throw error;
   return data ?? [];
 }
 
-export async function getProductsByCategory(
+export async function getProductosPorCategoria(
   categorySlug: string
-): Promise<Product[]> {
+): Promise<Producto[]> {
   const { data, error } = await supabase
-    .from("products")
-    .select("*, categories!inner(slug)")
-    .eq("is_active", true)
-    .eq("categories.slug", categorySlug)
-    .order("sort_order")
-    .order("name");
+    .from("productos")
+    .select("*, categorias!inner(slug)")
+    .eq("es_activo", true)
+    .eq("categorias.slug", categorySlug)
+    .order("orden_ordenamiento")
+    .order("nombre");
 
   if (error) throw error;
-  return (data ?? []).map(({ categories: _, ...product }) => product as Product);
+  return (data ?? []).map(({ categorias: _, ...producto }) => producto as Producto);
 }
 
-export async function getNewProducts(): Promise<Product[]> {
+export async function getProductosNuevos(): Promise<Producto[]> {
   const { data, error } = await supabase
-    .from("products")
+    .from("productos")
     .select("*")
-    .eq("is_active", true)
-    .eq("is_new", true)
-    .order("sort_order")
-    .order("name");
+    .eq("es_activo", true)
+    .eq("es_nuevo", true)
+    .order("orden_ordenamiento")
+    .order("nombre");
 
   if (error) throw error;
   return data ?? [];
 }
 
-export async function searchProducts(query: string): Promise<Product[]> {
+export async function buscarProductos(query: string): Promise<Producto[]> {
   const { data, error } = await supabase
-    .from("products")
+    .from("productos")
     .select("*")
-    .eq("is_active", true)
-    .or(`name.ilike.%${query}%,short_description.ilike.%${query}%`)
-    .order("name");
+    .eq("es_activo", true)
+    .or(`nombre.ilike.%${query}%,descripcion_corta.ilike.%${query}%`)
+    .order("nombre");
 
   if (error) throw error;
   return data ?? [];
 }
 
-export async function getDeliveryPoints(): Promise<DeliveryPoint[]> {
+export async function getPuntosEntrega(): Promise<PuntoEntrega[]> {
   const { data, error } = await supabase
-    .from("delivery_points")
+    .from("puntos_entrega")
     .select("*")
-    .eq("is_active", true)
-    .order("sort_order");
+    .eq("es_activo", true)
+    .order("orden_ordenamiento");
 
   if (error) throw error;
   return data ?? [];
 }
 
-export async function getContacts(): Promise<Contact[]> {
+export async function getContactos(): Promise<Contacto[]> {
   const { data, error } = await supabase
-    .from("contacts")
+    .from("contactos")
     .select("*")
-    .eq("is_active", true)
-    .order("sort_order");
+    .eq("es_activo", true)
+    .order("orden_ordenamiento");
 
   if (error) throw error;
   return data ?? [];
 }
 
-export async function getSiteConfig(): Promise<SiteConfig | null> {
+export async function getConfiguracionSitio(): Promise<ConfiguracionSitio | null> {
   const { data, error } = await supabase
-    .from("site_config")
+    .from("configuracion_sitio")
     .select("*")
     .eq("id", 1)
     .single();
 
   if (error) throw error;
   return data;
+}
+
+export async function getGeneros(): Promise<Genero[]> {
+  const { data, error } = await supabase
+    .from("generos")
+    .select("*")
+    .eq("es_activo", true)
+    .order("orden_ordenamiento");
+
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function getMarcas(): Promise<Marca[]> {
+  const { data, error } = await supabase
+    .from("marcas")
+    .select("*")
+    .eq("es_activo", true)
+    .order("orden_ordenamiento");
+
+  if (error) throw error;
+  return data ?? [];
 }

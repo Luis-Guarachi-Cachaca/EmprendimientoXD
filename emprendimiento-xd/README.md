@@ -141,13 +141,16 @@ Dado que Yanbal tiene pocos productos infantiles, agrupa por momentos/beneficios
 
 | Módulo | Descripción |
 |--------|-------------|
-| **Home** | Hero, buscador, presentación de la empresa y pasos de compra |
-| **Catálogo** | Productos filtrados por categoría con badge de novedad |
+| **Home** | Hero con imagen de fondo, filtros de categorías, presentación de la empresa y pasos de compra |
+| **Catálogo** | Productos filtrados por categoría con badge de novedad y diseño responsivo |
 | **Detalle de producto** | Descripción completa y galería de imágenes |
 | **Puntos de entrega** | Listado de lugares de recojo en Arani |
 | **Contacto** | Múltiples canales (WhatsApp, email, teléfono) |
-| **Carrito** | Panel lateral con persistencia en `localStorage` |
-| **Checkout** | Confirmación del pedido vía WhatsApp |
+| **Carrito** | Panel lateral con persistencia en `localStorage`, animación de producto volando al carrito |
+| **Checkout** | Confirmación del pedido vía WhatsApp con precios con descuento |
+| **Admin** | Panel de administración para crear/editar productos con subida de imágenes |
+| **Responsive Design** | Diseño totalmente responsivo con menú hamburguesa para móvil |
+| **Descuentos** | Sistema de descuentos porcentuales con precio final calculado |
 
 ---
 
@@ -172,28 +175,43 @@ Dado que Yanbal tiene pocos productos infantiles, agrupa por momentos/beneficios
 ```
 emprendimiento-xd/
 ├── app/
-│   ├── layout.tsx              # Layout raíz
-│   ├── page.tsx                # Home
+│   ├── layout.tsx              # Layout raíz con fuentes globales
+│   ├── page.tsx                # Home con Hero, productos y secciones
 │   ├── globals.css             # Estilos globales
+│   ├── admin/
+│   │   └── products/
+│   │       └── page.tsx        # Panel de administración de productos
 │   └── carrito/
 │       └── page.tsx            # Página del carrito
 ├── components/
-│   ├── Navbar.tsx              # Barra de navegación
-│   ├── ProductCard.tsx         # Tarjeta de producto
-│   └── CategoryFilter.tsx      # Filtro por categoría
+│   ├── Navbar.tsx              # Barra de navegación responsiva con menú hamburguesa
+│   ├── Hero.tsx                # Sección hero con imagen de fondo
+│   ├── ProductCard.tsx         # Tarjeta de producto con animación al carrito
+│   ├── CategoryFilter.tsx      # Filtro por categoría
+│   ├── CartSidebar.tsx         # Panel lateral del carrito
+│   ├── HowItWorks.tsx          # Sección de cómo funciona
+│   ├── Footer.tsx              # Pie de página
+│   └── admin/
+│       ├── ProductList.tsx     # Lista de productos en admin
+│       └── ProductForm.tsx     # Formulario para crear/editar productos
 ├── lib/
 │   ├── supabase/
 │   │   ├── client.ts           # Cliente Supabase
 │   │   └── queries.ts          # Consultas a la BD
 │   ├── whatsapp.ts             # Generación de mensajes WhatsApp
-│   └── utils.ts                # Utilidades (formato de precio, etc.)
+│   ├── utils.ts                # Utilidades (formato de precio, etc.)
+│   └── utils/
+│       └── imageCompression.ts # Compresión y subida de imágenes
 ├── store/
-│   └── cartStore.ts            # Estado global del carrito
+│   └── cartStore.ts            # Estado global del carrito con persistencia
 ├── types/
-│   └── index.ts                # Tipos TypeScript
+│   └── index.ts                # Tipos TypeScript (Product, Category, etc.)
 ├── supabase/
 │   ├── schema.sql              # Estructura de tablas
-│   └── seed.sql                # Datos de ejemplo
+│   ├── seed.sql                # Datos de ejemplo
+│   └── migrations/             # Migraciones de base de datos
+├── public/
+│   └── imagenes/               # Imágenes estáticas
 ├── .env.local.example          # Plantilla de variables de entorno
 └── package.json
 ```
@@ -283,11 +301,18 @@ erDiagram
         text description
         text brand_line
         numeric price
+        numeric discount_percentage
+        numeric final_price
         text image_url
         uuid category_id FK
         int stock
+        boolean is_available
         boolean is_new
         boolean is_active
+        text gender
+        int sort_order
+        timestamp created_at
+        timestamp updated_at
     }
 
     product_images {
@@ -303,6 +328,7 @@ erDiagram
         uuid id PK
         text name
         text slug UK
+        text description
         int sort_order
         boolean is_active
     }
@@ -319,21 +345,49 @@ erDiagram
     site_config {
         int id PK
         text company_name
+        text logo_url
+        text hero_badge
         text hero_title
         text hero_description
+        text hero_image_url
+        text shipping_note
+        text audience_note
         jsonb steps
         text contact_location
+        text footer_description
+        timestamp updated_at
     }
 ```
 
 | Tabla | Propósito |
 |-------|-----------|
 | `categories` | Tipos de producto (Cuidado de la Piel, Perfumes, etc.) |
-| `products` | Catálogo con descripción corta y completa |
-| `product_images` | Galería de imágenes por producto |
-| `delivery_points` | Puntos de recojo en Arani |
-| `contacts` | Canales de contacto (WhatsApp, email, teléfono) |
-| `site_config` | Contenido del home, footer y configuración general |
+| `products` | Catálogo completo con precios, descuentos, stock, género y disponibilidad |
+| `product_images` | Galería de imágenes por producto (múltiples imágenes) |
+| `delivery_points` | Puntos de recojo en Arani con descripciones |
+| `contacts` | Canales de contacto (WhatsApp, email, teléfono, otros) |
+| `site_config` | Configuración global: logo, hero, pasos de compra, notas, footer |
+
+### Campos importantes de la tabla products
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `id` | UUID | Identificador único del producto |
+| `name` | text | Nombre del producto |
+| `slug` | text | URL amigable (ej: "serum-facial-renovador") |
+| `price` | numeric | Precio original en Bolivianos |
+| `discount_percentage` | numeric | Porcentaje de descuento (0-100) |
+| `final_price` | numeric | Precio final después de descuento (calculado) |
+| `image_url` | text | URL de la imagen principal |
+| `category_id` | UUID | ID de la categoría (FK) |
+| `stock` | integer | Cantidad disponible en inventario |
+| `is_available` | boolean | Disponible para venta |
+| `is_new` | boolean | Muestra badge "Nuevo" |
+| `is_active` | boolean | Activo en el catálogo |
+| `gender` | text | Género: 'unisex', 'men', 'women', 'kids' |
+| `sort_order` | integer | Orden de visualización |
+| `created_at` | timestamp | Fecha de creación |
+| `updated_at` | timestamp | Fecha de última actualización |
 
 ### Configuración inicial
 
@@ -444,11 +498,16 @@ npm run lint     # Verificar código con ESLint
 - [x] Conexión con Supabase
 - [x] Diseño de base de datos
 - [x] Store del carrito (Zustand)
-- [ ] Interfaz del Home (hero, buscador, secciones)
-- [ ] Catálogo de productos con filtros
+- [x] Interfaz del Home (hero, buscador, secciones)
+- [x] Catálogo de productos con filtros
+- [x] Panel lateral del carrito
+- [x] Integración WhatsApp para checkout
+- [x] Sistema de descuentos porcentuales
+- [x] Panel de administración de productos
+- [x] Subida y compresión de imágenes
+- [x] Diseño responsivo (móvil y desktop)
+- [x] Animación de producto volando al carrito
 - [ ] Página de detalle de producto
-- [ ] Panel lateral del carrito
-- [ ] Integración WhatsApp para checkout
 - [ ] Deploy en Vercel
 
 ---

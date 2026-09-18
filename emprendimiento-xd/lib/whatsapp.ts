@@ -1,15 +1,15 @@
-import type { CartItem } from "@/types";
+import type { ItemCarrito } from "@/types";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 
-export function buildWhatsAppOrderMessage(items: CartItem[]): string {
+export function buildWhatsAppOrderMessage(items: ItemCarrito[]): string {
   const lines = items.map(
     (item) =>
-      `- ${item.product.name} x${item.quantity} = $${(item.product.price * item.quantity).toFixed(2)}`
+      `- ${item.producto.nombre} x${item.cantidad} = $${(item.producto.precio * item.cantidad).toFixed(2)}`
   );
 
   const total = items.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
+    (sum, item) => sum + item.producto.precio * item.cantidad,
     0
   );
 
@@ -22,7 +22,7 @@ export function buildWhatsAppOrderMessage(items: CartItem[]): string {
   ].join("\n");
 }
 
-export function getWhatsAppOrderUrl(items: CartItem[]): string {
+export function getWhatsAppOrderUrl(items: ItemCarrito[]): string {
   const message = buildWhatsAppOrderMessage(items);
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }

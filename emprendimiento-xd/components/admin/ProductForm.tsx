@@ -4,69 +4,101 @@ import { useState, useEffect, useRef } from "react";
 import { X, Upload, Loader2, Save, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { compressImage, uploadImageToSupabase } from "@/lib/utils/imageCompression";
-import type { Product, Gender } from "@/types";
+import type { Producto, Genero, Marca } from "@/types";
 
 interface ProductFormProps {
-  product?: Product;
+  producto?: Producto;
   onSuccess?: () => void;
   onCancel?: () => void;
 }
 
 interface FormData {
-  name: string;
+  nombre: string;
   slug: string;
-  short_description: string;
-  description: string;
-  brand_line: string;
-  price: string;
-  discount_percentage: string;
-  category_id: string;
+  descripcion_corta: string;
+  descripcion_completa: string;
+  marca_id: string;
+  precio: string;
+  porcentaje_descuento: string;
+  categoria_id: string;
   stock: string;
-  is_available: boolean;
-  is_new: boolean;
-  is_active: boolean;
-  gender: Gender | "";
+  esta_disponible: boolean;
+  es_nuevo: boolean;
+  es_activo: boolean;
+  genero_id: string;
   image_file: File | null;
-  image_url: string;
+  url_imagen: string;
 }
 
-export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) {
+export function ProductForm({ producto, onSuccess, onCancel }: ProductFormProps) {
   const [formData, setFormData] = useState<FormData>({
-    name: product?.name || "",
-    slug: product?.slug || "",
-    short_description: product?.short_description || "",
-    description: product?.description || "",
-    brand_line: product?.brand_line || "",
-    price: product?.price?.toString() || "",
-    discount_percentage: product?.discount_percentage?.toString() || "0",
-    category_id: product?.category_id || "",
-    stock: product?.stock?.toString() || "0",
-    is_available: product?.is_available ?? true,
-    is_new: product?.is_new || false,
-    is_active: product?.is_active ?? true,
-    gender: product?.gender || "",
+    nombre: producto?.nombre || "",
+    slug: producto?.slug || "",
+    descripcion_corta: producto?.descripcion_corta || "",
+    descripcion_completa: producto?.descripcion_completa || "",
+    marca_id: producto?.marca_id || "",
+    precio: producto?.precio?.toString() || "",
+    porcentaje_descuento: producto?.porcentaje_descuento?.toString() || "0",
+    categoria_id: producto?.categoria_id || "",
+    stock: producto?.stock?.toString() || "0",
+    esta_disponible: producto?.esta_disponible ?? true,
+    es_nuevo: producto?.es_nuevo || false,
+    es_activo: producto?.es_activo ?? true,
+    genero_id: producto?.genero_id || "",
     image_file: null,
-    image_url: product?.image_url || "",
+    url_imagen: producto?.url_imagen || "",
   });
 
   const [categories, setCategories] = useState<any[]>([]);
+  const [generos, setGeneros] = useState<Genero[]>([]);
+  const [marcas, setMarcas] = useState<Marca[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>(product?.image_url || "");
+  const [previewUrl, setPreviewUrl] = useState<string>(producto?.url_imagen || "");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchCategories();
+    fetchGeneros();
+    fetchMarcas();
   }, []);
+
+  const fetchGeneros = async () => {
+    const { data, error } = await supabase
+      .from("generos")
+      .select("*")
+      .eq("es_activo", true)
+      .order("orden_ordenamiento");
+
+    if (error) {
+      console.error("Error fetching generos:", error);
+    } else {
+      setGeneros(data || []);
+    }
+  };
+
+  const fetchMarcas = async () => {
+    const { data, error } = await supabase
+      .from("marcas")
+      .select("*")
+      .eq("es_activo", true)
+      .order("orden_ordenamiento");
+
+    if (error) {
+      console.error("Error fetching marcas:", error);
+    } else {
+      setMarcas(data || []);
+    }
+  };
 
   const fetchCategories = async () => {
     const { data, error } = await supabase
-      .from("categories")
+      .from("categorias")
       .select("*")
-      .eq("is_active", true)
-      .order("sort_order");
+      .eq("es_activo", true)
+      .order("orden_ordenamiento");
 
     if (error) {
       console.error("Error fetching categories:", error);
@@ -101,7 +133,7 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
       }));
 
       // Auto-generate slug when name changes
-      if (name === "name") {
+      if (name === "nombre") {
         setFormData((prev) => ({
           ...prev,
           slug: generateSlug(value),
@@ -173,17 +205,17 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
       console.log("Datos del formulario:", formData);
 
       // Validaciones
-      if (!formData.name.trim()) {
+      if (!formData.nombre.trim()) {
         throw new Error("El nombre es requerido");
       }
-      if (!formData.price || parseFloat(formData.price) <= 0) {
+      if (!formData.precio || parseFloat(formData.precio) <= 0) {
         throw new Error("El precio debe ser mayor a 0");
       }
-      if (!formData.category_id) {
+      if (!formData.categoria_id) {
         throw new Error("La categoría es requerida");
       }
 
-      let finalImageUrl = formData.image_url;
+      let finalImageUrl = formData.url_imagen;
 
       // Subir nueva imagen si existe
       if (formData.image_file) {
@@ -203,47 +235,49 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
       }
 
       const productData = {
-        name: formData.name,
+        nombre: formData.nombre,
         slug: formData.slug,
-        short_description: formData.short_description || null,
-        description: formData.description || null,
-        brand_line: formData.brand_line || null,
-        price: parseFloat(formData.price),
-        discount_percentage: parseFloat(formData.discount_percentage) || 0,
-        image_url: finalImageUrl || null,
-        category_id: formData.category_id || null,
+        descripcion_corta: formData.descripcion_corta || null,
+        descripcion_completa: formData.descripcion_completa || null,
+        marca_id: formData.marca_id || null,
+        precio: parseFloat(formData.precio),
+        porcentaje_descuento: parseFloat(formData.porcentaje_descuento) || 0,
+        url_imagen: finalImageUrl || null,
+        categoria_id: formData.categoria_id || null,
+        genero_id: formData.genero_id || null,
         stock: parseInt(formData.stock) || 0,
-        is_available: formData.is_available,
-        is_new: formData.is_new,
-        is_active: formData.is_active,
-        gender: formData.gender || null,
-        sort_order: product?.sort_order || 0,
+        esta_disponible: formData.esta_disponible,
+        es_nuevo: formData.es_nuevo,
+        es_activo: formData.es_activo,
+        orden_ordenamiento: producto?.orden_ordenamiento || 0,
       };
 
-      console.log("💾 Guardando producto en Supabase:", productData);
+      console.log("💾 Guardando producto vía API:", productData);
 
-      let error;
+      let response;
 
-      if (product?.id) {
+      if (producto?.id) {
         // Actualizar producto existente
-        console.log("🔄 Actualizando producto existente:", product.id);
-        const { error: updateError } = await supabase
-          .from("products")
-          .update(productData)
-          .eq("id", product.id);
-        error = updateError;
+        console.log("🔄 Actualizando producto existente:", producto.id);
+        response = await fetch(`/api/admin/productos/${producto.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(productData),
+        });
       } else {
         // Crear nuevo producto
         console.log("➕ Creando nuevo producto");
-        const { error: insertError } = await supabase
-          .from("products")
-          .insert(productData);
-        error = insertError;
+        response = await fetch('/api/admin/productos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(productData),
+        });
       }
 
-      if (error) {
-        console.error("❌ Error de Supabase:", error);
-        throw new Error(`Error al guardar el producto: ${error.message}`);
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("❌ Error de API:", errorData);
+        throw new Error(errorData.error || 'Error al guardar el producto');
       }
 
       console.log("✅ Producto guardado exitosamente");
@@ -260,7 +294,7 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
     <div className="bg-white rounded-xl shadow-lg p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-[#2B4C7E]">
-          {product?.id ? "Editar Producto" : "Nuevo Producto"}
+          {producto?.id ? "Editar Producto" : "Nuevo Producto"}
         </h2>
         <button
           onClick={onCancel}
@@ -341,14 +375,14 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
 
         {/* Nombre */}
         <div>
-          <label htmlFor="name" className="block text-sm font-semibold text-[#1E2229] mb-2">
+          <label htmlFor="nombre" className="block text-sm font-semibold text-[#1E2229] mb-2">
             Nombre del Producto *
           </label>
           <input
             type="text"
-            id="name"
-            name="name"
-            value={formData.name}
+            id="nombre"
+            name="nombre"
+            value={formData.nombre}
             onChange={handleInputChange}
             required
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2B4C7E] focus:border-transparent"
@@ -374,13 +408,13 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
 
         {/* Descripción Corta */}
         <div>
-          <label htmlFor="short_description" className="block text-sm font-semibold text-[#1E2229] mb-2">
+          <label htmlFor="descripcion_corta" className="block text-sm font-semibold text-[#1E2229] mb-2">
             Descripción Corta
           </label>
           <textarea
-            id="short_description"
-            name="short_description"
-            value={formData.short_description}
+            id="descripcion_corta"
+            name="descripcion_corta"
+            value={formData.descripcion_corta}
             onChange={handleInputChange}
             rows={2}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2B4C7E] focus:border-transparent"
@@ -390,13 +424,13 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
 
         {/* Descripción Larga */}
         <div>
-          <label htmlFor="description" className="block text-sm font-semibold text-[#1E2229] mb-2">
+          <label htmlFor="descripcion_completa" className="block text-sm font-semibold text-[#1E2229] mb-2">
             Descripción Completa
           </label>
           <textarea
-            id="description"
-            name="description"
-            value={formData.description}
+            id="descripcion_completa"
+            name="descripcion_completa"
+            value={formData.descripcion_completa}
             onChange={handleInputChange}
             rows={4}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2B4C7E] focus:border-transparent"
@@ -404,33 +438,38 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
           />
         </div>
 
-        {/* Línea de Marca */}
+        {/* Marca */}
         <div>
-          <label htmlFor="brand_line" className="block text-sm font-semibold text-[#1E2229] mb-2">
-            Línea de Marca
+          <label htmlFor="marca_id" className="block text-sm font-semibold text-[#1E2229] mb-2">
+            Marca
           </label>
-          <input
-            type="text"
-            id="brand_line"
-            name="brand_line"
-            value={formData.brand_line}
+          <select
+            id="marca_id"
+            name="marca_id"
+            value={formData.marca_id}
             onChange={handleInputChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2B4C7E] focus:border-transparent"
-            placeholder="Ej: Yanbal Homme"
-          />
+          >
+            <option value="">Sin marca</option>
+            {marcas.map((marca) => (
+              <option key={marca.id} value={marca.id}>
+                {marca.nombre}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Precio */}
           <div>
-            <label htmlFor="price" className="block text-sm font-semibold text-[#1E2229] mb-2">
+            <label htmlFor="precio" className="block text-sm font-semibold text-[#1E2229] mb-2">
               Precio (Bs.) *
             </label>
             <input
               type="number"
-              id="price"
-              name="price"
-              value={formData.price}
+              id="precio"
+              name="precio"
+              value={formData.precio}
               onChange={handleInputChange}
               required
               min="0"
@@ -442,14 +481,14 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
 
           {/* Descuento */}
           <div>
-            <label htmlFor="discount_percentage" className="block text-sm font-semibold text-[#1E2229] mb-2">
+            <label htmlFor="porcentaje_descuento" className="block text-sm font-semibold text-[#1E2229] mb-2">
               Descuento (%)
             </label>
             <input
               type="number"
-              id="discount_percentage"
-              name="discount_percentage"
-              value={formData.discount_percentage}
+              id="porcentaje_descuento"
+              name="porcentaje_descuento"
+              value={formData.porcentaje_descuento}
               onChange={handleInputChange}
               min="0"
               max="100"
@@ -463,13 +502,13 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Categoría */}
           <div>
-            <label htmlFor="category_id" className="block text-sm font-semibold text-[#1E2229] mb-2">
+            <label htmlFor="categoria_id" className="block text-sm font-semibold text-[#1E2229] mb-2">
               Categoría *
             </label>
             <select
-              id="category_id"
-              name="category_id"
-              value={formData.category_id}
+              id="categoria_id"
+              name="categoria_id"
+              value={formData.categoria_id}
               onChange={handleInputChange}
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2B4C7E] focus:border-transparent"
@@ -477,7 +516,7 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
               <option value="">Seleccionar categoría</option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
-                  {cat.name}
+                  {cat.nombre}
                 </option>
               ))}
             </select>
@@ -503,21 +542,22 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
 
         {/* Género */}
         <div>
-          <label htmlFor="gender" className="block text-sm font-semibold text-[#1E2229] mb-2">
+          <label htmlFor="genero_id" className="block text-sm font-semibold text-[#1E2229] mb-2">
             Género
           </label>
           <select
-            id="gender"
-            name="gender"
-            value={formData.gender}
+            id="genero_id"
+            name="genero_id"
+            value={formData.genero_id}
             onChange={handleInputChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2B4C7E] focus:border-transparent"
           >
             <option value="">Sin especificar</option>
-            <option value="unisex">Unisex</option>
-            <option value="men">Para Él</option>
-            <option value="women">Para Ella</option>
-            <option value="kids">Niños</option>
+            {generos.map((genero) => (
+              <option key={genero.id} value={genero.id}>
+                {genero.nombre}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -526,8 +566,8 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
-              name="is_available"
-              checked={formData.is_available}
+              name="esta_disponible"
+              checked={formData.esta_disponible}
               onChange={handleInputChange}
               className="w-5 h-5 text-[#2B4C7E] rounded focus:ring-[#2B4C7E]"
             />
@@ -537,8 +577,8 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
-              name="is_new"
-              checked={formData.is_new}
+              name="es_nuevo"
+              checked={formData.es_nuevo}
               onChange={handleInputChange}
               className="w-5 h-5 text-[#2B4C7E] rounded focus:ring-[#2B4C7E]"
             />
@@ -548,8 +588,8 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
-              name="is_active"
-              checked={formData.is_active}
+              name="es_activo"
+              checked={formData.es_activo}
               onChange={handleInputChange}
               className="w-5 h-5 text-[#2B4C7E] rounded focus:ring-[#2B4C7E]"
             />
@@ -572,7 +612,7 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
             ) : (
               <>
                 <Save className="w-5 h-5" />
-                {product?.id ? "Actualizar" : "Crear"} Producto
+                {producto?.id ? "Actualizar" : "Crear"} Producto
               </>
             )}
           </button>
