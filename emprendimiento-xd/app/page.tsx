@@ -29,13 +29,32 @@ export default function Home() {
       });
   }, []);
 
+  // Id del género "unisex": aunque se oculta como pill en el filtro,
+  // sus productos deben aparecer al elegir "Para Él" o "Para Ella".
+  const unisexId = useMemo(
+    () => generos.find((g) => g.slug === "unisex")?.id ?? null,
+    [generos]
+  );
+  const selectedGeneroSlug = useMemo(
+    () => generos.find((g) => g.id === selectedGenero)?.slug ?? null,
+    [generos, selectedGenero]
+  );
+
   const filteredProducts = useMemo(() => {
     return productos.filter((p) => {
       const matchCategoria = !selectedCategoria || p.categoria_id === selectedCategoria;
-      const matchGenero = !selectedGenero || p.genero_id === selectedGenero;
+
+      const incluyeUnisex =
+        unisexId !== null &&
+        p.genero_id === unisexId &&
+        (selectedGeneroSlug === "para-el" || selectedGeneroSlug === "para-ella");
+
+      const matchGenero =
+        !selectedGenero || p.genero_id === selectedGenero || incluyeUnisex;
+
       return matchCategoria && matchGenero;
     });
-  }, [productos, selectedCategoria, selectedGenero]);
+  }, [productos, selectedCategoria, selectedGenero, unisexId, selectedGeneroSlug]);
 
   return (
     <main className="flex-1">
@@ -58,7 +77,7 @@ export default function Home() {
           onSelectGenero={setSelectedGenero}
         />
 
-        <div className="container mx-auto px-4 pt-2 pb-8">
+        <div className="container mx-auto px-4 pt-0 pb-8">
           {filteredProducts.length === 0 ? (
             <p className="text-center text-[#6B7280] py-12">
               No hay productos en esta categoría.

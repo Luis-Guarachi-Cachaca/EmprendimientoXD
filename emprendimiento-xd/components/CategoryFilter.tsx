@@ -62,9 +62,7 @@ export function CategoryFilter({
   onSelectGenero,
 }: CategoryFilterProps) {
   return (
-    // id + scroll-mt-24: punto de destino del botón "Ver Productos" del Hero.
-    // El scroll-mt deja un margen arriba al llegar, por si hay navbar fija.
-    <div id="productos" className="scroll-mt-24 px-4 pb-2">
+    <div className="px-4 pb-0">
       <div className="container mx-auto relative rounded-3xl bg-gradient-to-br from-[#EBF1F5] via-[#EBF1F5]/50 to-white overflow-hidden">
         <div className="relative grid grid-cols-1 lg:grid-cols-[auto_1px_1fr] gap-4 lg:gap-10 p-3 md:p-4">
           {/* Género (izquierda) — 2 columnas, ocupa menos alto */}
@@ -82,15 +80,17 @@ export function CategoryFilter({
                 active={selectedGenero === null}
                 onClick={() => onSelectGenero(null)}
               />
-              {generos.map((genero) => (
-                <GenderPill
-                  key={genero.id}
-                  label={genero.nombre}
-                  icon={GENERO_ICONS[genero.slug] ?? User}
-                  active={selectedGenero === genero.id}
-                  onClick={() => onSelectGenero(genero.id)}
-                />
-              ))}
+              {generos
+                .filter((genero) => genero.slug !== "unisex")
+                .map((genero) => (
+                  <GenderPill
+                    key={genero.id}
+                    label={genero.nombre}
+                    icon={GENERO_ICONS[genero.slug] ?? User}
+                    active={selectedGenero === genero.id}
+                    onClick={() => onSelectGenero(genero.id)}
+                  />
+                ))}
             </div>
           </div>
 
@@ -113,20 +113,22 @@ export function CategoryFilter({
                 active={selectedCategoria === null}
                 onClick={() => onSelectCategoria(null)}
               />
-              {categorias.map((categoria) => {
-                const style = CATEGORIA_STYLE[categoria.slug] ?? CATEGORIA_STYLE_DEFAULT;
-                return (
-                  <CategoryPill
-                    key={categoria.id}
-                    label={limpiarNombre(categoria.nombre)}
-                    icon={style.icon}
-                    iconBg={style.bg}
-                    iconText={style.text}
-                    active={selectedCategoria === categoria.id}
-                    onClick={() => onSelectCategoria(categoria.id)}
-                  />
-                );
-              })}
+              {categorias
+                .filter((categoria) => categoria.slug !== "joyeria-y-accesorios")
+                .map((categoria) => {
+                  const style = CATEGORIA_STYLE[categoria.slug] ?? CATEGORIA_STYLE_DEFAULT;
+                  return (
+                    <CategoryPill
+                      key={categoria.id}
+                      label={limpiarNombre(categoria.nombre)}
+                      icon={style.icon}
+                      iconBg={style.bg}
+                      iconText={style.text}
+                      active={selectedCategoria === categoria.id}
+                      onClick={() => onSelectCategoria(categoria.id)}
+                    />
+                  );
+                })}
             </div>
           </div>
         </div>
