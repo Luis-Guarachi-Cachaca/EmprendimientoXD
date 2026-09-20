@@ -28,6 +28,8 @@ interface FormData {
   genero_id: string;
   image_file: File | null;
   url_imagen: string;
+  contenido: string;
+  unidad_medida: string;
 }
 
 export function ProductForm({ producto, onSuccess, onCancel }: ProductFormProps) {
@@ -47,6 +49,8 @@ export function ProductForm({ producto, onSuccess, onCancel }: ProductFormProps)
     genero_id: producto?.genero_id || "",
     image_file: null,
     url_imagen: producto?.url_imagen || "",
+    contenido: producto?.contenido?.toString() || "",
+    unidad_medida: producto?.unidad_medida || "",
   });
 
   const [categories, setCategories] = useState<any[]>([]);
@@ -250,6 +254,8 @@ export function ProductForm({ producto, onSuccess, onCancel }: ProductFormProps)
         es_nuevo: formData.es_nuevo,
         es_activo: formData.es_activo,
         orden_ordenamiento: producto?.orden_ordenamiento || 0,
+        contenido: formData.contenido ? parseFloat(formData.contenido) : null,
+        unidad_medida: formData.unidad_medida || null,
       };
 
       console.log("💾 Guardando producto vía API:", productData);
@@ -457,6 +463,45 @@ export function ProductForm({ producto, onSuccess, onCancel }: ProductFormProps)
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Contenido y Unidad de Medida */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="contenido" className="block text-sm font-semibold text-[#1E2229] mb-2">
+              Contenido (cantidad/peso/volumen)
+            </label>
+            <input
+              type="number"
+              id="contenido"
+              name="contenido"
+              value={formData.contenido}
+              onChange={handleInputChange}
+              min="0"
+              step="0.1"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2B4C7E] focus:border-transparent"
+              placeholder="Ej: 150"
+            />
+          </div>
+          <div>
+            <label htmlFor="unidad_medida" className="block text-sm font-semibold text-[#1E2229] mb-2">
+              Unidad de Medida
+            </label>
+            <select
+              id="unidad_medida"
+              name="unidad_medida"
+              value={formData.unidad_medida}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2B4C7E] focus:border-transparent"
+            >
+              <option value="">Sin unidad</option>
+              <option value="ml">Mililitros (ml)</option>
+              <option value="g">Gramos (g)</option>
+              <option value="kg">Kilogramos (kg)</option>
+              <option value="l">Litros (l)</option>
+              <option value="unidad">Unidad</option>
+            </select>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

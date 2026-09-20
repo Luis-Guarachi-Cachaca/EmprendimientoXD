@@ -48,6 +48,8 @@ export async function PUT(
     if (body.es_nuevo !== undefined) productoData.es_nuevo = body.es_nuevo;
     if (body.es_activo !== undefined) productoData.es_activo = body.es_activo;
     if (body.orden_ordenamiento !== undefined) productoData.orden_ordenamiento = body.orden_ordenamiento;
+    if (body.contenido !== undefined) productoData.contenido = body.contenido ? parseFloat(body.contenido) : null;
+    if (body.unidad_medida !== undefined) productoData.unidad_medida = body.unidad_medida;
 
     const { data, error } = await supabaseServer
       .from('productos')

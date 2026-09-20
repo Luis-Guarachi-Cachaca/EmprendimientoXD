@@ -63,6 +63,9 @@ export interface Producto {
   categoria?: Categoria;
   genero?: Genero;
   marca?: Marca;
+  // Campos de contenido
+  contenido: number | null;
+  unidad_medida: 'ml' | 'g' | 'kg' | 'l' | 'unidad' | null;
 }
 
 export interface PuntoEntrega {

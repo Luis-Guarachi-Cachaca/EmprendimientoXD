@@ -4,8 +4,13 @@ const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 
 export function buildWhatsAppOrderMessage(items: ItemCarrito[]): string {
   const lines = items.map(
-    (item) =>
-      `- ${item.producto.nombre} x${item.cantidad} = $${(item.producto.precio * item.cantidad).toFixed(2)}`
+    (item) => {
+      const producto = item.producto;
+      const contenidoStr = producto.contenido && producto.unidad_medida 
+        ? ` - ${producto.contenido} ${producto.unidad_medida}`
+        : '';
+      return `- ${producto.nombre}${contenidoStr} x${item.cantidad} = $${(producto.precio * item.cantidad).toFixed(2)}`
+    }
   );
 
   const total = items.reduce(

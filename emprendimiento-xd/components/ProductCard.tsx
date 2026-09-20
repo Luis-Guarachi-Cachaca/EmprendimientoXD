@@ -83,6 +83,11 @@ export function ProductCard({ producto }: ProductCardProps) {
         <div className="p-4 space-y-3">
           <h3 className="font-semibold text-[#1E2229] line-clamp-2 min-h-[2.5rem]">
             {producto.nombre}
+            {producto.contenido && producto.unidad_medida && (
+              <span className="text-sm font-normal text-[#6B7280] ml-2">
+                {producto.contenido} {producto.unidad_medida}
+              </span>
+            )}
           </h3>
           <p className="text-sm text-[#6B7280] line-clamp-2 min-h-[2.5rem]">
             {producto.descripcion_corta}

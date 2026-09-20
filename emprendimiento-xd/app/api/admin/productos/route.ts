@@ -41,6 +41,8 @@ export async function POST(request: NextRequest) {
       es_nuevo: body.es_nuevo || false,
       es_activo: body.es_activo !== undefined ? body.es_activo : true,
       orden_ordenamiento: body.orden_ordenamiento || 0,
+      contenido: body.contenido ? parseFloat(body.contenido) : null,
+      unidad_medida: body.unidad_medida || null,
     };
 
     const { data, error } = await supabaseServer
