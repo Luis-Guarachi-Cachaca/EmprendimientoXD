@@ -64,18 +64,18 @@ export function CategoryFilter({
   return (
     // id + scroll-mt-24: punto de destino del botón "Ver Productos" del Hero.
     // El scroll-mt deja un margen arriba al llegar, por si hay navbar fija.
-    <div id="productos" className="scroll-mt-24 py-10 px-4">
-      <div className="relative max-w-6xl mx-auto rounded-3xl bg-gradient-to-br from-[#EBF1F5] via-[#EBF1F5]/50 to-white overflow-hidden">
-        <div className="relative grid grid-cols-1 lg:grid-cols-[auto_1px_1fr] gap-6 lg:gap-10 p-6 md:p-8">
-          {/* Género (izquierda) — lista vertical, ocupa poco ancho */}
-          <div className="flex flex-col gap-3 lg:w-56">
+    <div id="productos" className="scroll-mt-24 px-4 pb-2">
+      <div className="container mx-auto relative rounded-3xl bg-gradient-to-br from-[#EBF1F5] via-[#EBF1F5]/50 to-white overflow-hidden">
+        <div className="relative grid grid-cols-1 lg:grid-cols-[auto_1px_1fr] gap-4 lg:gap-10 p-3 md:p-4">
+          {/* Género (izquierda) — 2 columnas, ocupa menos alto */}
+          <div className="flex flex-col gap-2 lg:w-72">
             <div className="flex items-center gap-1.5 text-[#FF7B54]">
               <Users size={16} />
               <span className="text-xs font-bold uppercase tracking-wider">
                 Género
               </span>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="grid grid-cols-2 gap-1.5">
               <GenderPill
                 label="Todos"
                 icon={Users}
@@ -99,14 +99,14 @@ export function CategoryFilter({
           <div className="h-px w-24 mx-auto bg-[#2B4C7E]/15 lg:hidden" />
 
           {/* Categoría (derecha) — píldoras con ícono, usan todo el ancho */}
-          <div className="flex flex-col gap-3 w-full">
+          <div className="flex flex-col gap-2 w-full">
             <div className="flex items-center gap-1.5 text-[#2B4C7E]">
               <Tag size={16} />
               <span className="text-xs font-bold uppercase tracking-wider">
                 Categoría
               </span>
             </div>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2">
               <CategoryPill
                 label="Todas"
                 icon={LayoutGrid}
@@ -151,7 +151,7 @@ function GenderPill({
       type="button"
       onClick={onClick}
       className={`
-        w-full flex items-center gap-3 rounded-full px-4 py-2.5 text-sm font-semibold
+        w-full flex items-center gap-3 rounded-full px-3 py-1.5 text-sm font-semibold
         transition-all duration-200 border
         ${
           active
@@ -160,7 +160,7 @@ function GenderPill({
         }
       `}
     >
-      <Icon size={18} className={active ? "text-white" : "text-[#2B4C7E]"} />
+      <Icon size={16} className={active ? "text-white" : "text-[#2B4C7E]"} />
       {label}
     </button>
   );
@@ -186,7 +186,7 @@ function CategoryPill({
       type="button"
       onClick={onClick}
       className={`
-        flex items-center gap-3 rounded-full pl-3 pr-5 py-2.5 text-left
+        flex items-center gap-3 rounded-full pl-2.5 pr-4 py-1.5 text-left
         transition-all duration-200 border
         ${
           active
@@ -196,11 +196,11 @@ function CategoryPill({
       `}
     >
       <span
-        className={`shrink-0 flex items-center justify-center h-9 w-9 rounded-full ${
+        className={`shrink-0 flex items-center justify-center h-7 w-7 rounded-full ${
           active ? "bg-white/15" : iconBg ?? "bg-[#EBF1F5]"
         }`}
       >
-        <Icon size={18} className={active ? "text-white" : iconText ?? "text-[#2B4C7E]"} />
+        <Icon size={15} className={active ? "text-white" : iconText ?? "text-[#2B4C7E]"} />
       </span>
       <span className={`text-sm font-semibold leading-snug ${active ? "text-white" : "text-[#1E2229]"}`}>
         {label}

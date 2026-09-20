@@ -41,7 +41,14 @@ export default function Home() {
     <main className="flex-1">
       <Hero />
 
-      <section className="bg-white">
+      {/* id + scroll-mt-24: punto de destino del botón "Ver Productos" del Hero */}
+      <section id="productos" className="bg-[#EBF1F5] scroll-mt-24">
+        <div className="container mx-auto px-4 pt-4">
+          <h2 className="text-2xl font-bold text-[#2B4C7E] text-center mb-2">
+            Nuestros Productos
+          </h2>
+        </div>
+
         <CategoryFilter
           categorias={categorias}
           generos={generos}
@@ -50,20 +57,14 @@ export default function Home() {
           onSelectCategoria={setSelectedCategoria}
           onSelectGenero={setSelectedGenero}
         />
-      </section>
 
-      <section id="productos" className="bg-[#EBF1F5] py-12">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-[#2B4C7E] text-center mb-8">
-            Nuestros Productos
-          </h2>
-
+        <div className="container mx-auto px-4 pt-2 pb-8">
           {filteredProducts.length === 0 ? (
             <p className="text-center text-[#6B7280] py-12">
               No hay productos en esta categoría.
             </p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5">
               {filteredProducts.map((producto) => (
                 <ProductCard key={producto.id} producto={producto} />
               ))}
