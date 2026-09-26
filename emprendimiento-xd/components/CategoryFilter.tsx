@@ -15,8 +15,10 @@ import {
   Droplet,
   Gem,
   Tag,
+  Search,
   type LucideIcon,
 } from "lucide-react";
+import { useSearchStore } from "@/store/searchStore";
 
 interface CategoryFilterProps {
   categorias: Categoria[];
@@ -61,12 +63,15 @@ export function CategoryFilter({
   onSelectCategoria,
   onSelectGenero,
 }: CategoryFilterProps) {
+  const searchQuery = useSearchStore((state) => state.query);
+  const setSearchQuery = useSearchStore((state) => state.setQuery);
+
   return (
     <div className="px-4 pb-0">
       <div className="container mx-auto relative rounded-3xl bg-gradient-to-br from-[#EBF1F5] via-[#EBF1F5]/50 to-white overflow-hidden">
-        <div className="relative grid grid-cols-1 lg:grid-cols-[auto_1px_1fr] gap-4 lg:gap-10 p-3 md:p-4">
-          {/* Género (izquierda) — 2 columnas, ocupa menos alto */}
-          <div className="flex flex-col gap-2 lg:w-72">
+        <div className="relative grid grid-cols-1 lg:grid-cols-[auto_1px_1fr_1px_auto] gap-4 lg:gap-8 p-3 md:p-4 items-start">
+          {/* Género */}
+          <div className="flex flex-col gap-2 lg:w-64">
             <div className="flex items-center gap-1.5 text-[#FF7B54]">
               <Users size={16} />
               <span className="text-xs font-bold uppercase tracking-wider">
@@ -98,7 +103,7 @@ export function CategoryFilter({
           <div className="hidden lg:block w-px self-stretch bg-[#2B4C7E]/15" />
           <div className="h-px w-24 mx-auto bg-[#2B4C7E]/15 lg:hidden" />
 
-          {/* Categoría (derecha) — píldoras con ícono, usan todo el ancho */}
+          {/* Categoría — píldoras con ícono, usan todo el ancho */}
           <div className="flex flex-col gap-2 w-full">
             <div className="flex items-center gap-1.5 text-[#2B4C7E]">
               <Tag size={16} />
@@ -129,6 +134,33 @@ export function CategoryFilter({
                     />
                   );
                 })}
+            </div>
+          </div>
+
+          {/* Separador */}
+          <div className="hidden lg:block w-px self-stretch bg-[#2B4C7E]/15" />
+          <div className="h-px w-24 mx-auto bg-[#2B4C7E]/15 lg:hidden" />
+
+          {/* Buscador (derecha) */}
+          <div className="flex flex-col gap-2 lg:w-60">
+            <div className="flex items-center gap-1.5 text-[#2B4C7E]">
+              <Search size={16} />
+              <span className="text-xs font-bold uppercase tracking-wider">
+                Buscar
+              </span>
+            </div>
+            <div className="relative">
+              <Search
+                size={16}
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#1E2229]/40"
+              />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Buscar productos..."
+                className="w-full rounded-full border border-[#2B4C7E]/10 bg-white py-2 pl-9 pr-3 text-sm text-[#1E2229] placeholder:text-[#1E2229]/40 focus:outline-none focus:ring-2 focus:ring-[#2B4C7E]/30 transition-shadow"
+              />
             </div>
           </div>
         </div>

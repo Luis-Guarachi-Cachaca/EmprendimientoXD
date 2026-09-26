@@ -25,10 +25,23 @@ export function ProductCard({ producto }: ProductCardProps) {
 
     // Animación de producto volando al carrito
     const buttonRect = buttonRef.current?.getBoundingClientRect();
-    const cartIcon = document.querySelector('[data-cart-icon]') as HTMLElement;
-    const cartRect = cartIcon?.getBoundingClientRect();
+
+    // Puede haber más de un [data-cart-icon] en el DOM (versión desktop y
+    // mobile del navbar, una de ellas oculta por CSS según el ancho de
+    // pantalla). Buscamos el que esté realmente visible para que la
+    // animación llegue al ícono correcto.
+    const cartIcons = document.querySelectorAll<HTMLElement>('[data-cart-icon]');
+    let cartRect: DOMRect | undefined;
+    cartIcons.forEach((icon) => {
+      const rect = icon.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        cartRect = rect;
+      }
+    });
 
     if (buttonRect && cartRect) {
+      const targetRect = cartRect; // const: TS lo mantiene como definido dentro del setTimeout de abajo
+
       setFlyingImage({
         x: buttonRect.left + buttonRect.width / 2,
         y: buttonRect.top + buttonRect.height / 2,
@@ -39,8 +52,8 @@ export function ProductCard({ producto }: ProductCardProps) {
       // Animación hacia el carrito
       setTimeout(() => {
         setFlyingImage({
-          x: cartRect.left + cartRect.width / 2,
-          y: cartRect.top + cartRect.height / 2,
+          x: targetRect.left + targetRect.width / 2,
+          y: targetRect.top + targetRect.height / 2,
           opacity: 0,
           scale: 0.3,
         });
@@ -49,7 +62,7 @@ export function ProductCard({ producto }: ProductCardProps) {
       // Limpiar después de la animación
       setTimeout(() => {
         setFlyingImage(null);
-      }, 600);
+      }, 1200);
     }
 
     addItem(producto);
@@ -129,7 +142,7 @@ export function ProductCard({ producto }: ProductCardProps) {
       {/* Imagen volando hacia el carrito */}
       {flyingImage && producto.url_imagen && (
         <div
-          className="fixed pointer-events-none z-50 transition-all duration-500 ease-in-out"
+          className="fixed pointer-events-none z-50 transition-all duration-[1100ms] ease-in-out"
           style={{
             left: `${flyingImage.x}px`,
             top: `${flyingImage.y}px`,

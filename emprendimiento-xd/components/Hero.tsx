@@ -2,28 +2,10 @@ import { ShieldCheck, MapPin, Lock } from "lucide-react";
 
 /**
  * ─────────────────────────────────────────────────────────────
- * TIPOGRAFÍA — agregar esto en app/layout.tsx (una sola vez)
+ * TIPOGRAFÍA — registrada en app/layout.tsx
  * ─────────────────────────────────────────────────────────────
- *
- *   import { Poppins, Montserrat } from "next/font/google";
- *
- *   const poppins = Poppins({
- *     subsets: ["latin"],
- *     weight: ["400", "500", "600", "700"],
- *     variable: "--font-poppins",
- *   });
- *
- *   const montserrat = Montserrat({
- *     subsets: ["latin"],
- *     weight: ["800"],
- *     variable: "--font-montserrat",
- *   });
- *
- *   // en <body className={`${poppins.variable} ${montserrat.variable}`}>
- *
- * Uso por elemento:
- *   - Logo, menú, etiqueta, texto, botones, beneficios → Poppins
- *   - Título principal → Montserrat ExtraBold (800)
+ *   - Logo, menú, etiqueta, texto, botones, beneficios → Poppins (--font-poppins)
+ *   - Título principal → Bevan (--font-bevan)
  * ─────────────────────────────────────────────────────────────
  */
 
@@ -38,11 +20,11 @@ export function Hero() {
             Belleza y cuidado personal para todos
           </div>
 
-          {/* Título principal — Montserrat ExtraBold, 64px / 48px móvil */}
-          <h1 className="font-[family-name:var(--font-montserrat)] text-[48px] font-extrabold leading-[1.1] text-[#1E2229] md:text-[64px]">
-            Tu esencia,
+          {/* Título principal — Bevan, 64px / 48px móvil */}
+          <h1 className="font-[family-name:var(--font-bevan)] text-[48px] leading-[1.1] text-[#1E2229] md:text-[64px]">
+            TU ESENCIA,
             <br />
-            nuestro cuidado.
+            NUESTRO CUIDADO.
           </h1>
 
           {/* Texto descriptivo — Poppins Regular 16px, interlineado 1.6 */}
