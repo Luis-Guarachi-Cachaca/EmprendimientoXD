@@ -72,7 +72,7 @@ export function ProductCard({ producto }: ProductCardProps) {
     <>
       <article className="h-full bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200 flex flex-col">
         {/* Imagen del producto — alto fijo, no depende de la imagen real */}
-        <div className="h-56 sm:h-60 bg-[#EBF1F5] relative shrink-0 p-3">
+        <div className="h-48 sm:h-56 md:h-60 bg-[#EBF1F5] relative shrink-0 p-2 sm:p-3">
           {producto.url_imagen ? (
             <img
               src={producto.url_imagen}
@@ -86,39 +86,39 @@ export function ProductCard({ producto }: ProductCardProps) {
           )}
           {/* Badge de novedad */}
           {producto.es_nuevo && (
-            <span className="absolute top-2 left-2 bg-[#FF7B54] text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
+            <span className="absolute top-1.5 sm:top-2 left-1.5 sm:left-2 bg-[#FF7B54] text-white text-[9px] sm:text-[10px] font-semibold px-1.5 sm:px-2 py-0.5 rounded-full">
               Nuevo
             </span>
           )}
         </div>
 
         {/* Información del producto */}
-        <div className="p-3 flex flex-col flex-1">
-          <h3 className="text-base font-bold uppercase tracking-wide text-[#1E2229] line-clamp-2 min-h-[2.5rem]">
+        <div className="p-2.5 sm:p-3 flex flex-col flex-1">
+          <h3 className="text-sm sm:text-base font-bold uppercase tracking-wide text-[#1E2229] line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]">
             {producto.nombre}
           </h3>
 
           {/* Precio + Contenido (ml/g) en la misma fila */}
-          <div className="mt-2 min-h-[1.75rem] flex items-end justify-between gap-2">
+          <div className="mt-1.5 sm:mt-2 min-h-[1.5rem] sm:min-h-[1.75rem] flex items-end justify-between gap-2">
             <div>
               {producto.porcentaje_descuento && producto.porcentaje_descuento > 0 ? (
                 <div className="flex items-baseline gap-1.5">
-                  <p className="text-base font-bold text-[#FF7B54]">
+                  <p className="text-sm sm:text-base font-bold text-[#FF7B54]">
                     Bs. {producto.precio_final?.toFixed(2)}
                   </p>
-                  <p className="text-xs text-[#6B7280] line-through">
+                  <p className="text-[11px] sm:text-xs text-[#6B7280] line-through">
                     Bs. {producto.precio.toFixed(2)}
                   </p>
                 </div>
               ) : (
-                <p className="text-base font-bold text-[#2B4C7E]">
+                <p className="text-sm sm:text-base font-bold text-[#2B4C7E]">
                   Bs. {producto.precio.toFixed(2)}
                 </p>
               )}
             </div>
 
             {producto.contenido && (
-              <p className="shrink-0 text-xs font-medium text-[#6B7280]">
+              <p className="shrink-0 text-[11px] sm:text-xs font-medium text-[#6B7280]">
                 {producto.contenido} {producto.unidad_medida}
               </p>
             )}
@@ -129,7 +129,7 @@ export function ProductCard({ producto }: ProductCardProps) {
             ref={buttonRef}
             onClick={handleAddToCart}
             disabled={!producto.esta_disponible}
-            className={`mt-3 w-full bg-[#2B4C7E] text-white py-1.5 rounded-md text-xs font-semibold hover:bg-[#1E3A5F] transition-all flex items-center justify-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed ${
+            className={`mt-2 sm:mt-3 w-full bg-[#2B4C7E] text-white py-2 sm:py-1.5 rounded-md text-xs sm:text-xs font-semibold hover:bg-[#1E3A5F] transition-all flex items-center justify-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] ${
               isAnimating ? 'scale-95 bg-[#1E3A5F]' : ''
             }`}
           >

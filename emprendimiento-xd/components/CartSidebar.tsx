@@ -64,37 +64,37 @@ export function CartSidebar() {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 right-0 w-full max-w-md bg-white h-full shadow-2xl transform transition-transform duration-300 ease-in-out z-50 ${
+        className={`fixed top-0 right-0 w-full sm:max-w-md bg-white h-full shadow-2xl transform transition-transform duration-300 ease-in-out z-50 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h2 className="text-xl font-bold text-[#2B4C7E]">Carrito</h2>
+          <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-200">
+            <h2 className="text-lg sm:text-xl font-bold text-[#2B4C7E]">Carrito</h2>
             <button
               onClick={closeCart}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
-              <X className="w-6 h-6 text-[#1E2229]" />
+              <X className="w-5 h-5 sm:w-6 sm:h-6 text-[#1E2229]" />
             </button>
           </div>
 
           {/* Products List */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4">
             {items.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
                 <p className="text-[#6B7280]">Tu carrito está vacío</p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {items.map((item: ItemCarrito) => (
                   <div
                     key={item.producto.id}
-                    className="flex gap-4 p-4 bg-[#EBF1F5] rounded-lg"
+                    className="flex gap-3 sm:gap-4 p-3 sm:p-4 bg-[#EBF1F5] rounded-lg"
                   >
                     {/* Product Image */}
-                    <div className="w-20 h-20 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
                       {item.producto.url_imagen ? (
                         <img
                           src={item.producto.url_imagen}
@@ -108,21 +108,21 @@ export function CartSidebar() {
 
                     {/* Product Info */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-[#1E2229] text-sm line-clamp-2">
+                      <h3 className="font-semibold text-[#1E2229] text-xs sm:text-sm line-clamp-2">
                         {item.producto.nombre}
                       </h3>
                       <div className="mt-1">
                         {item.producto.porcentaje_descuento && item.producto.porcentaje_descuento > 0 ? (
                           <>
-                            <p className="text-xs text-[#6B7280] line-through">
+                            <p className="text-[11px] sm:text-xs text-[#6B7280] line-through">
                               Bs. {item.producto.precio.toFixed(2)}
                             </p>
-                            <p className="text-[#FF7B54] font-bold">
+                            <p className="text-sm sm:text-base text-[#FF7B54] font-bold">
                               Bs. {item.producto.precio_final?.toFixed(2)}
                             </p>
                           </>
                         ) : (
-                          <p className="text-[#2B4C7E] font-bold">
+                          <p className="text-sm sm:text-base text-[#2B4C7E] font-bold">
                             Bs. {item.producto.precio.toFixed(2)}
                           </p>
                         )}
@@ -163,11 +163,11 @@ export function CartSidebar() {
 
           {/* Footer */}
           {items.length > 0 && (
-            <div className="border-t border-gray-200 p-4 space-y-4">
+            <div className="border-t border-gray-200 p-3 sm:p-4 space-y-3 sm:space-y-4">
               {/* Total */}
               <div className="flex justify-between items-center">
                 <span className="font-semibold text-[#1E2229]">Total</span>
-                <span className="text-2xl font-bold text-[#2B4C7E]">
+                <span className="text-xl sm:text-2xl font-bold text-[#2B4C7E]">
                   Bs. {totalPrice.toFixed(2)}
                 </span>
               </div>
@@ -179,20 +179,20 @@ export function CartSidebar() {
                   placeholder="Nombre del cliente"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2B4C7E] focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2B4C7E] focus:border-transparent text-sm"
                 />
               </div>
 
               {/* Contact Button */}
               <button
                 onClick={handleContactSeller}
-                className="w-full bg-[#FF7B54] text-white py-3 rounded-lg font-semibold hover:bg-[#E66A45] transition-colors"
+                className="w-full bg-[#FF7B54] text-white py-3 rounded-lg font-semibold hover:bg-[#E66A45] transition-colors min-h-[44px]"
               >
                 Contactarse con un vendedor
               </button>
 
               {/* Footer Text */}
-              <p className="text-center text-sm text-[#6B7280]">
+              <p className="text-center text-xs sm:text-sm text-[#6B7280]">
                 {totalItems} productos · Recoge en tu punto GLOWSPOT
               </p>
             </div>

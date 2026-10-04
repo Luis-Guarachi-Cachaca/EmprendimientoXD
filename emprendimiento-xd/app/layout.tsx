@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Poppins, Bevan } from "next/font/google";
 import "./globals.css";
@@ -29,6 +29,11 @@ const bevan = Bevan({
 export const metadata: Metadata = {
   title: "GLOWSPOT - Distribuidor Yanbal Bolivia",
   description: "Tu belleza Yanbal, más cerca que nunca. Pide online y recoge en tu GlowSpot de Arani.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

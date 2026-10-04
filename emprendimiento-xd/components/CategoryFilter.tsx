@@ -29,6 +29,18 @@ interface CategoryFilterProps {
   onSelectGenero: (generoId: string | null) => void;
 }
 
+// Categorías que se ocultan visualmente (sin tocar backend/base de datos)
+const CATEGORIAS_OCULTAS = ["Maquillaje"];
+
+// Quita acentos/diacríticos y pasa a minúsculas, para comparar sin importar
+// mayúsculas/minúsculas y tildes
+function normalizarParaComparar(texto: string) {
+  return texto
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
 // Ícono + color pastel por slug de categoría. Si aparece una categoría
 // nueva sin slug mapeado, cae en un ícono/color genérico en vez de romper.
 const CATEGORIA_STYLE: Record<string, { icon: LucideIcon; bg: string; text: string }> = {
@@ -119,7 +131,16 @@ export function CategoryFilter({
                 onClick={() => onSelectCategoria(null)}
               />
               {categorias
-                .filter((categoria) => categoria.slug !== "joyeria-y-accesorios")
+                .filter((categoria) => {
+                  // Filtrar por slug (joyeria-y-accesorios)
+                  if (categoria.slug === "joyeria-y-accesorios") return false;
+                  // Filtrar por nombre normalizado (Maquillaje)
+                  const nombreNormalizado = normalizarParaComparar(limpiarNombre(categoria.nombre));
+                  const estaOculto = CATEGORIAS_OCULTAS.some((oculta) =>
+                    normalizarParaComparar(oculta) === nombreNormalizado
+                  );
+                  return !estaOculto;
+                })
                 .map((categoria) => {
                   const style = CATEGORIA_STYLE[categoria.slug] ?? CATEGORIA_STYLE_DEFAULT;
                   return (
@@ -142,7 +163,7 @@ export function CategoryFilter({
           <div className="h-px w-24 mx-auto bg-[#2B4C7E]/15 lg:hidden" />
 
           {/* Buscador (derecha) */}
-          <div className="flex flex-col gap-2 lg:w-60">
+          <div className="flex flex-col gap-2 w-full lg:w-80">
             <div className="flex items-center gap-1.5 text-[#2B4C7E]">
               <Search size={16} />
               <span className="text-xs font-bold uppercase tracking-wider">
@@ -151,15 +172,15 @@ export function CategoryFilter({
             </div>
             <div className="relative">
               <Search
-                size={16}
-                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#1E2229]/40"
+                size={20}
+                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#1E2229]/40"
               />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar productos..."
-                className="w-full rounded-full border border-[#2B4C7E]/10 bg-white py-2 pl-9 pr-3 text-sm text-[#1E2229] placeholder:text-[#1E2229]/40 focus:outline-none focus:ring-2 focus:ring-[#2B4C7E]/30 transition-shadow"
+                className="w-full rounded-full border border-[#2B4C7E]/10 bg-white py-3 pl-12 pr-4 text-base text-[#1E2229] placeholder:text-[#1E2229]/40 focus:outline-none focus:ring-2 focus:ring-[#2B4C7E]/30 transition-shadow"
               />
             </div>
           </div>
