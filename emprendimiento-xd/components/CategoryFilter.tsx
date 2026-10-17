@@ -81,9 +81,9 @@ export function CategoryFilter({
   return (
     <div className="px-4 pb-0">
       <div className="container mx-auto relative rounded-3xl bg-gradient-to-br from-[#EBF1F5] via-[#EBF1F5]/50 to-white overflow-hidden">
-        <div className="relative grid grid-cols-1 lg:grid-cols-[auto_1px_1fr_1px_auto] gap-4 lg:gap-8 p-3 md:p-4 items-start">
+        <div className="relative flex flex-col lg:flex-row lg:items-start gap-4 lg:gap-8 p-3 md:p-4">
           {/* Género */}
-          <div className="flex flex-col gap-2 lg:w-64">
+          <div className="flex flex-col gap-2 lg:w-64 shrink-0">
             <div className="flex items-center gap-1.5 text-[#FF7B54]">
               <Users size={16} />
               <span className="text-xs font-bold uppercase tracking-wider">
@@ -112,58 +112,95 @@ export function CategoryFilter({
           </div>
 
           {/* Separador */}
-          <div className="hidden lg:block w-px self-stretch bg-[#2B4C7E]/15" />
+          <div className="hidden lg:block w-px self-stretch bg-[#2B4C7E]/15 shrink-0" />
           <div className="h-px w-24 mx-auto bg-[#2B4C7E]/15 lg:hidden" />
 
           {/* Categoría — píldoras con ícono, usan todo el ancho */}
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-col gap-2 shrink-0 lg:w-fit">
             <div className="flex items-center gap-1.5 text-[#2B4C7E]">
               <Tag size={16} />
               <span className="text-xs font-bold uppercase tracking-wider">
                 Categoría
               </span>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <CategoryPill
-                label="Todas"
-                icon={LayoutGrid}
-                active={selectedCategoria === null}
-                onClick={() => onSelectCategoria(null)}
-              />
-              {categorias
-                .filter((categoria) => {
-                  // Filtrar por slug (joyeria-y-accesorios)
-                  if (categoria.slug === "joyeria-y-accesorios") return false;
-                  // Filtrar por nombre normalizado (Maquillaje)
-                  const nombreNormalizado = normalizarParaComparar(limpiarNombre(categoria.nombre));
-                  const estaOculto = CATEGORIAS_OCULTAS.some((oculta) =>
-                    normalizarParaComparar(oculta) === nombreNormalizado
+            <div className="flex flex-col lg:flex-col gap-2">
+              {/* Primera línea: Todas, Perfumes y Fragancias, Cuidado Facial */}
+              <div className="flex gap-2 lg:flex-nowrap">
+                <CategoryPill
+                  label="Todas"
+                  icon={LayoutGrid}
+                  active={selectedCategoria === null}
+                  onClick={() => onSelectCategoria(null)}
+                />
+                {categorias
+                  .filter((categoria) => {
+                    // Filtrar por slug (joyeria-y-accesorios)
+                    if (categoria.slug === "joyeria-y-accesorios") return false;
+                    // Filtrar por nombre normalizado (Maquillaje)
+                    const nombreNormalizado = normalizarParaComparar(limpiarNombre(categoria.nombre));
+                    const estaOculto = CATEGORIAS_OCULTAS.some((oculta) =>
+                      normalizarParaComparar(oculta) === nombreNormalizado
+                    );
+                    if (estaOculto) return false;
+                    // Solo categorías de la primera línea
+                    const nombre = limpiarNombre(categoria.nombre);
+                    return nombre === "Perfumes y Fragancias" || nombre === "Cuidado Facial";
+                  })
+                  .map((categoria) => {
+                    const style = CATEGORIA_STYLE[categoria.slug] ?? CATEGORIA_STYLE_DEFAULT;
+                    return (
+                      <CategoryPill
+                        key={categoria.id}
+                        label={limpiarNombre(categoria.nombre)}
+                        icon={style.icon}
+                        iconBg={style.bg}
+                        iconText={style.text}
+                        active={selectedCategoria === categoria.id}
+                        onClick={() => onSelectCategoria(categoria.id)}
+                      />
+                    );
+                  })}
+              </div>
+              {/* Segunda línea: Protección Solar, Cuidado Corporal y Capilar */}
+              <div className="flex gap-2 lg:flex-nowrap">
+                {categorias
+                  .filter((categoria) => {
+                    // Filtrar por slug (joyeria-y-accesorios)
+                    if (categoria.slug === "joyeria-y-accesorios") return false;
+                    // Filtrar por nombre normalizado (Maquillaje)
+                    const nombreNormalizado = normalizarParaComparar(limpiarNombre(categoria.nombre));
+                    const estaOculto = CATEGORIAS_OCULTAS.some((oculta) =>
+                      normalizarParaComparar(oculta) === nombreNormalizado
                   );
-                  return !estaOculto;
-                })
-                .map((categoria) => {
-                  const style = CATEGORIA_STYLE[categoria.slug] ?? CATEGORIA_STYLE_DEFAULT;
-                  return (
-                    <CategoryPill
-                      key={categoria.id}
-                      label={limpiarNombre(categoria.nombre)}
-                      icon={style.icon}
-                      iconBg={style.bg}
-                      iconText={style.text}
-                      active={selectedCategoria === categoria.id}
-                      onClick={() => onSelectCategoria(categoria.id)}
-                    />
-                  );
-                })}
+                    if (estaOculto) return false;
+                    // Solo categorías de la segunda línea
+                    const nombre = limpiarNombre(categoria.nombre);
+                    return nombre === "Protección Solar" || nombre === "Cuidado Corporal y Capilar";
+                  })
+                  .map((categoria) => {
+                    const style = CATEGORIA_STYLE[categoria.slug] ?? CATEGORIA_STYLE_DEFAULT;
+                    return (
+                      <CategoryPill
+                        key={categoria.id}
+                        label={limpiarNombre(categoria.nombre)}
+                        icon={style.icon}
+                        iconBg={style.bg}
+                        iconText={style.text}
+                        active={selectedCategoria === categoria.id}
+                        onClick={() => onSelectCategoria(categoria.id)}
+                      />
+                    );
+                  })}
+              </div>
             </div>
           </div>
 
           {/* Separador */}
-          <div className="hidden lg:block w-px self-stretch bg-[#2B4C7E]/15" />
+          <div className="hidden lg:block w-px self-stretch bg-[#2B4C7E]/15 shrink-0" />
           <div className="h-px w-24 mx-auto bg-[#2B4C7E]/15 lg:hidden" />
 
           {/* Buscador (derecha) */}
-          <div className="flex flex-col gap-2 w-full lg:w-80">
+          <div className="flex flex-col gap-2 flex-1 min-w-0">
             <div className="flex items-center gap-1.5 text-[#2B4C7E]">
               <Search size={16} />
               <span className="text-xs font-bold uppercase tracking-wider">
@@ -242,7 +279,7 @@ function CategoryPill({
       onClick={onClick}
       className={`
         flex items-center gap-3 rounded-full pl-2.5 pr-4 py-1.5 text-left
-        transition-all duration-200 border
+        transition-all duration-200 border whitespace-nowrap shrink-0
         ${
           active
             ? "bg-[#2B4C7E] border-[#2B4C7E] shadow-md shadow-[#2B4C7E]/20"
