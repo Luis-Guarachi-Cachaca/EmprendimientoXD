@@ -1,14 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, Search, Loader2, AlertCircle } from "lucide-react";
+import { Plus, Edit, Trash2, Search, Loader2, AlertCircle, Tag } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
-import type { Producto } from "@/types";
+import type { Producto, Categoria } from "@/types";
 import { ProductForm } from "./ProductForm";
 
 export function ProductList() {
   const [products, setProducts] = useState<Producto[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Producto[]>([]);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [selectedCategoria, setSelectedCategoria] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,20 +20,23 @@ export function ProductList() {
 
   useEffect(() => {
     fetchProducts();
+    fetchCategorias();
   }, []);
 
+  // Búsqueda por texto + filtro por categoría (se combinan)
   useEffect(() => {
-    if (searchTerm) {
-      const filtered = products.filter(
-        (p) =>
-          p.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (p.marca && p.marca.nombre.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-      setFilteredProducts(filtered);
-    } else {
-      setFilteredProducts(products);
-    }
-  }, [searchTerm, products]);
+    const filtered = products.filter((p) => {
+      const matchBusqueda =
+        !searchTerm ||
+        p.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (p.marca && p.marca.nombre.toLowerCase().includes(searchTerm.toLowerCase()));
+
+      const matchCategoria = !selectedCategoria || p.categoria_id === selectedCategoria;
+
+      return matchBusqueda && matchCategoria;
+    });
+    setFilteredProducts(filtered);
+  }, [searchTerm, selectedCategoria, products]);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -54,6 +59,24 @@ export function ProductList() {
       setLoading(false);
     }
   };
+
+  // Todas las categorías (incluidas las que se ocultan en el sitio público),
+  // para poder encontrar cualquier producto desde el admin.
+  const fetchCategorias = async () => {
+    const { data, error } = await supabase
+      .from("categorias")
+      .select("*")
+      .order("orden_ordenamiento");
+
+    if (error) {
+      console.error("Error fetching categorias:", error);
+    } else {
+      setCategorias(data || []);
+    }
+  };
+
+  const getCategoriaNombre = (categoriaId: string | null) =>
+    categorias.find((c) => c.id === categoriaId)?.nombre;
 
   const handleCreate = () => {
     setEditingProduct(undefined);
@@ -139,6 +162,43 @@ export function ProductList() {
         />
       </div>
 
+      {/* Filtro por categoría */}
+      {categorias.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#2B4C7E] mr-1">
+            <Tag className="w-4 h-4" />
+            Categoría
+          </span>
+
+          <button
+            type="button"
+            onClick={() => setSelectedCategoria(null)}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+              selectedCategoria === null
+                ? "bg-[#2B4C7E] text-white border-[#2B4C7E]"
+                : "bg-white text-[#1E2229] border-gray-300 hover:border-[#2B4C7E] hover:text-[#2B4C7E]"
+            }`}
+          >
+            Todas
+          </button>
+
+          {categorias.map((categoria) => (
+            <button
+              key={categoria.id}
+              type="button"
+              onClick={() => setSelectedCategoria(categoria.id)}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                selectedCategoria === categoria.id
+                  ? "bg-[#2B4C7E] text-white border-[#2B4C7E]"
+                  : "bg-white text-[#1E2229] border-gray-300 hover:border-[#2B4C7E] hover:text-[#2B4C7E]"
+              }`}
+            >
+              {categoria.nombre}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Error */}
       {error && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
@@ -157,8 +217,8 @@ export function ProductList() {
           {/* Products Grid */}
           {filteredProducts.length === 0 ? (
             <div className="text-center py-12 text-[#6B7280]">
-              {searchTerm ? (
-                <p>No se encontraron productos que coincidan con la búsqueda.</p>
+              {searchTerm || selectedCategoria ? (
+                <p>No se encontraron productos con la búsqueda o la categoría seleccionada.</p>
               ) : (
                 <p>No hay productos. Crea el primero para comenzar.</p>
               )}
@@ -198,6 +258,25 @@ export function ProductList() {
                     <p className="text-sm text-[#6B7280] line-clamp-1">
                       {product.marca?.nombre || ''}
                     </p>
+
+                    {/* Categoría + contenido con su unidad de medida */}
+                    {getCategoriaNombre(product.categoria_id) || product.contenido ? (
+                      <div className="flex items-center justify-between gap-2">
+                        {getCategoriaNombre(product.categoria_id) ? (
+                          <span className="min-w-0 truncate text-xs font-medium px-2 py-1 rounded-full bg-[#EBF1F5] text-[#2B4C7E]">
+                            {getCategoriaNombre(product.categoria_id)}
+                          </span>
+                        ) : (
+                          <span />
+                        )}
+                        {product.contenido ? (
+                          <span className="shrink-0 text-xs font-medium text-[#6B7280]">
+                            {product.contenido} {product.unidad_medida}
+                          </span>
+                        ) : null}
+                      </div>
+                    ) : null}
+
                     <div className="flex items-center justify-between">
                       <div>
                         {product.porcentaje_descuento && product.porcentaje_descuento > 0 ? (
