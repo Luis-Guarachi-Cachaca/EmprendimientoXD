@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { X, Upload, Loader2, Save, AlertCircle } from "lucide-react";
+import { X, Upload, Loader2, Save, AlertCircle, Plus } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { compressImage, uploadImageToSupabase } from "@/lib/utils/imageCompression";
 import type { Producto, Genero, Marca } from "@/types";
@@ -63,6 +63,12 @@ export function ProductForm({ producto, onSuccess, onCancel }: ProductFormProps)
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Crear marca nueva desde el formulario
+  const [showNewMarca, setShowNewMarca] = useState(false);
+  const [newMarcaNombre, setNewMarcaNombre] = useState("");
+  const [creatingMarca, setCreatingMarca] = useState(false);
+  const [marcaError, setMarcaError] = useState<string | null>(null);
+
   useEffect(() => {
     fetchCategories();
     fetchGeneros();
@@ -108,6 +114,41 @@ export function ProductForm({ producto, onSuccess, onCancel }: ProductFormProps)
       console.error("Error fetching categories:", error);
     } else {
       setCategories(data || []);
+    }
+  };
+
+  const handleCreateMarca = async () => {
+    const nombre = newMarcaNombre.trim();
+    if (!nombre) {
+      setMarcaError("Escribe el nombre de la marca");
+      return;
+    }
+
+    setCreatingMarca(true);
+    setMarcaError(null);
+
+    try {
+      const response = await fetch("/api/admin/marcas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Error al crear la marca");
+      }
+
+      // La nueva marca queda disponible y seleccionada en el formulario
+      setMarcas((prev) => [...prev, result]);
+      setFormData((prev) => ({ ...prev, marca_id: result.id }));
+      setNewMarcaNombre("");
+      setShowNewMarca(false);
+    } catch (err) {
+      setMarcaError(err instanceof Error ? err.message : "Error desconocido");
+    } finally {
+      setCreatingMarca(false);
     }
   };
 
@@ -446,9 +487,24 @@ export function ProductForm({ producto, onSuccess, onCancel }: ProductFormProps)
 
         {/* Marca */}
         <div>
-          <label htmlFor="marca_id" className="block text-sm font-semibold text-[#1E2229] mb-2">
-            Marca
-          </label>
+          <div className="flex items-center justify-between mb-2">
+            <label htmlFor="marca_id" className="block text-sm font-semibold text-[#1E2229]">
+              Marca
+            </label>
+            {!showNewMarca && (
+              <button
+                type="button"
+                onClick={() => {
+                  setShowNewMarca(true);
+                  setMarcaError(null);
+                }}
+                className="flex items-center gap-1 text-sm font-semibold text-[#2B4C7E] hover:underline"
+              >
+                <Plus className="w-4 h-4" />
+                Nueva marca
+              </button>
+            )}
+          </div>
           <select
             id="marca_id"
             name="marca_id"
@@ -463,6 +519,57 @@ export function ProductForm({ producto, onSuccess, onCancel }: ProductFormProps)
               </option>
             ))}
           </select>
+
+          {/* Crear una marca nueva sin salir del formulario */}
+          {showNewMarca && (
+            <div className="mt-3 p-3 bg-[#EBF1F5] rounded-lg space-y-2">
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="text"
+                  value={newMarcaNombre}
+                  onChange={(e) => setNewMarcaNombre(e.target.value)}
+                  onKeyDown={(e) => {
+                    // Enter crea la marca; sin esto enviaría todo el formulario del producto
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleCreateMarca();
+                    }
+                  }}
+                  autoFocus
+                  placeholder="Nombre de la nueva marca"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#2B4C7E] focus:border-transparent"
+                />
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCreateMarca}
+                    disabled={creatingMarca}
+                    className="flex items-center justify-center gap-2 px-4 py-2 bg-[#2B4C7E] text-white rounded-lg font-semibold hover:bg-[#1E3A5F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {creatingMarca ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Plus className="w-4 h-4" />
+                    )}
+                    Crear
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowNewMarca(false);
+                      setNewMarcaNombre("");
+                      setMarcaError(null);
+                    }}
+                    disabled={creatingMarca}
+                    className="px-4 py-2 border border-gray-300 bg-white rounded-lg font-semibold text-[#1E2229] hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+              {marcaError && <p className="text-sm text-red-600">{marcaError}</p>}
+            </div>
+          )}
         </div>
 
         {/* Contenido y Unidad de Medida */}

@@ -12,13 +12,18 @@ import { supabase } from "./client";
 export async function getProductos(): Promise<Producto[]> {
   const { data, error } = await supabase
     .from("productos")
-    .select("*")
+    .select("*, marcas(*)")
     .eq("es_activo", true)
     .order("orden_ordenamiento")
     .order("nombre");
 
   if (error) throw error;
-  return data ?? [];
+
+  // La relación llega como "marcas"; se expone como "marca" (igual que en getProductoPorSlug)
+  return (data ?? []).map(({ marcas, ...producto }) => ({
+    ...producto,
+    marca: marcas ?? undefined,
+  })) as Producto[];
 }
 
 export async function getProductoPorSlug(slug: string): Promise<Producto | null> {

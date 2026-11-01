@@ -120,6 +120,12 @@ export function ProductCard({ producto }: ProductCardProps) {
               Nuevo
             </span>
           )}
+          {/* Etiqueta de marca — esquina superior derecha */}
+          {producto.marca && (
+            <span className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2 max-w-[55%] truncate rounded-full bg-white/90 px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wide text-[#2B4C7E] shadow-sm">
+              {producto.marca.nombre}
+            </span>
+          )}
         </div>
 
         {/* Información del producto */}
