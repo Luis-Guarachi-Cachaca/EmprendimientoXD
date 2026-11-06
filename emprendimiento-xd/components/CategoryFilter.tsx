@@ -125,7 +125,7 @@ export function CategoryFilter({
             </div>
             <div className="flex flex-col lg:flex-col gap-2">
               {/* Primera línea: Todas, Perfumes y Fragancias, Cuidado Facial */}
-              <div className="flex gap-2 lg:flex-nowrap">
+              <div className="flex flex-wrap gap-2 lg:flex-nowrap">
                 <CategoryPill
                   label="Todas"
                   icon={LayoutGrid}
@@ -162,7 +162,7 @@ export function CategoryFilter({
                   })}
               </div>
               {/* Segunda línea: Protección Solar, Cuidado Corporal y Capilar */}
-              <div className="flex gap-2 lg:flex-nowrap">
+              <div className="flex flex-wrap gap-2 lg:flex-nowrap">
                 {categorias
                   .filter((categoria) => {
                     // Filtrar por slug (joyeria-y-accesorios)
