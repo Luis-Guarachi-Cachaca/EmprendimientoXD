@@ -23,8 +23,8 @@ export function Navbar() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="text-xl md:text-2xl font-bold text-[#2B4C7E]">
-            GLOWSPOT
+          <Link href="/" className="text-xl md:text-2xl font-bold uppercase text-[#2B4C7E]">
+            K’acha Encanto
           </Link>
 
           {/* Navegación desktop */}

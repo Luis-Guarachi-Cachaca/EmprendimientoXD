@@ -27,8 +27,8 @@ const bevan = Bevan({
 });
 
 export const metadata: Metadata = {
-  title: "GLOWSPOT - Distribuidor Yanbal Bolivia",
-  description: "Tu belleza Yanbal, más cerca que nunca. Pide online y recoge en tu GlowSpot de Arani.",
+  title: "K’acha Encanto - Distribuidor Yanbal Bolivia",
+  description: "Tu belleza Yanbal, más cerca que nunca. Pide online y recoge en tu punto de entrega de Arani.",
 };
 
 export const viewport: Viewport = {

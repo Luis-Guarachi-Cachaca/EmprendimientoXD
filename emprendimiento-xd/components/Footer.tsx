@@ -33,7 +33,7 @@ export function Footer() {
       title: "Contáctanos en WhatsApp",
       subtitle: "Te atendemos al instante",
       href: whatsappUrl,
-      ariaLabel: "Abrir WhatsApp de GLOWSPOT",
+      ariaLabel: "Abrir WhatsApp de K’acha Encanto",
       target: true,
     },
     {
@@ -42,7 +42,7 @@ export function Footer() {
       title: "Síguenos en Facebook",
       subtitle: "Conoce nuestras novedades",
       href: "https://www.facebook.com/share/14qsoiQ93Rh/",
-      ariaLabel: "Abrir Facebook de GLOWSPOT",
+      ariaLabel: "Abrir Facebook de K’acha Encanto",
       target: true,
     },
     {
@@ -50,8 +50,8 @@ export function Footer() {
       iconColor: "#000000",
       title: "Síguenos en TikTok",
       subtitle: "Tips, trends y más",
-      href: "https://www.tiktok.com/@glowspot0",
-      ariaLabel: "Abrir TikTok de GLOWSPOT",
+      href: "https://www.tiktok.com/@kachaencanto",
+      ariaLabel: "Abrir TikTok de K’acha Encanto",
       target: true,
       hasBorder: true,
     },
@@ -61,7 +61,7 @@ export function Footer() {
       title: "Envíanos un correo",
       subtitle: "Estamos para ayudarte",
       href: "mailto:glowspot83@gmail.com",
-      ariaLabel: "Enviar correo a GLOWSPOT",
+      ariaLabel: "Enviar correo a K’acha Encanto",
       target: false,
     },
   ];
@@ -70,13 +70,14 @@ export function Footer() {
     <footer id="contacto" className="bg-[#1E2229] text-white">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr_1fr] gap-8 lg:gap-12">
-          {/* Columna 1: GLOWSPOT */}
+          {/* Columna 1: K’acha Encanto */}
           <div className="space-y-6">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-[#FF7B54] rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-xl">G</span>
-              </div>
-              <span className="text-2xl font-bold">GLOWSPOT</span>
+              <img
+                src="/imagenes/logo-kacha-encanto.png"
+                alt="K’acha Encanto Accesorios"
+                className="h-28 w-28 rounded-2xl object-cover"
+              />
             </div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-[500px]">
               Distribuidor independiente de productos en Cochabamba. 
@@ -180,7 +181,7 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
-          <p>© 2026 GLOWSPOT - Distribuidor Independiente</p>
+          <p>© 2026 K’acha Encanto - Distribuidor Independiente</p>
         </div>
       </div>
     </footer>
